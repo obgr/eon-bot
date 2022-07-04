@@ -24,6 +24,39 @@ intents.message_content = True
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), description=description, intents=intents)
 bot.connections = {}
 
+# Functions
+def prettifyDice(rolls):
+    out =[]
+    #out=""
+    for i in rolls:
+    #for x in range(len(i)): 
+        if i == "1":
+            emoji=":one:"
+        elif i == "2":
+            emoji=":two:"
+        elif i == "3":
+            emoji=":three:"
+        elif i == "4":
+            emoji=":four:"
+        elif i == "5":
+            emoji=":five:"
+        elif i == "6":
+            emoji=":six:"
+        else:
+            emoji=i
+        out.append(str(emoji))
+    return ', '.join(out)
+
+def nick_or_username(ctx):
+    #ctx.message.author
+    #ctx.message.author.nick
+    #ctx.message.author.id
+    if ctx.message.author.nick == None:
+        out = ctx.message.author
+    elif ctx.message.author.nick != None:
+        out = ctx.message.author.nick
+    return out
+
 @bot.command()
 async def syntax(ctx: commands.Context ):
     """Shows example syntax"""
@@ -54,7 +87,7 @@ async def syntax(ctx: commands.Context ):
     # This example will still use a six sided die.
     {PREFIX}ob 4t8 
     ```
-    """ .format(PREFIX=PREFIX)
+    """.format(PREFIX=PREFIX)
     await ctx.send(results)
 
 @bot.command()
@@ -76,8 +109,16 @@ async def roll(ctx: commands.Context, roll: str):
             print("len of RollSplit should only be 2 or 3")
             print("Len: ", len(RollSplit))
         sum_rolls, raw_rolls, total = dice(int(number_of_rolls), int(bonus), int(sides_to_die))
-        results = { "sum_rolls": sum_rolls, "raw_rolls": raw_rolls, "total": total }
+        semiPrettyRolls=', '.join(raw_rolls)
+        user = nick_or_username(ctx)
 
+        results = "{USER} Rolled\n".format(USER=user)
+        results = results + "Rolls............ : {ROLLS}".format(ROLLS=semiPrettyRolls)
+        if int(bonus) != 0:
+            results = results + "+ {BONUS}\n".format(BONUS=bonus)
+        else:
+            results = results + "\n"
+        results = results + "Total.............: {TOTAL}".format(TOTAL=total )
     except ValueError:
         await ctx.send("Format has to be in NtN+N, NtN, NdN+N or NdN")
         return
@@ -89,6 +130,9 @@ async def ob(ctx: commands.Context, roll: str):
     """
     ob dice, Rolls two additional dice for each rolled six.
     """
+    #print(ctx.message.author.id)
+    #print(ctx.message.author)
+    #print(ctx.message.author.nick)
     try:
         # Pattern to split: "[(T|t|D|d)+$]\s*"
         RollSplit = re.split(r"[(T|t|D|d)+$]\s*", roll)
@@ -103,14 +147,22 @@ async def ob(ctx: commands.Context, roll: str):
             print("len of RollSplit should only be 2 or 3")
             print("Len: ", len(RollSplit))
         sum_rolls, ob_rolls, raw_rolls, sixes, total = ob_dice(int(number_of_rolls), int(bonus))
-        results = { "sum_rolls": sum_rolls, "ob_rolls": ob_rolls, "raw_rolls": raw_rolls,"sixes": sixes, "total": total }
+        pretty_rolls=prettifyDice(ob_rolls)
+        user = nick_or_username(ctx)     
 
+        results = "{USER} Rolled\n".format(USER=user)
+        if sixes != 0:
+            results = results + "No. Sixes.... : {SIXES}\n".format(SIXES=sixes)
+        results = results + "Rolls............ : {ROLLS}".format(ROLLS=pretty_rolls)
+        if int(bonus) != 0:
+            results = results + "+ {BONUS}\n".format(BONUS=bonus)
+        else:
+            results = results + "\n"
+        results = results + "Total.............: {TOTAL}".format(TOTAL=total )
     except ValueError:
-        await ctx.send("Format has to be in Nt6+N, Nt6, Nd6+N or Nd6")
+        await ctx.send("Format has to be in Nd6+N, Nd6, Nt6+N or Nt6")
         return
-
-    #sum_rolls, ob_rolls, raw_rolls, sixes, total = ob_dice(int(number_of_rolls), int(bonus))
-    #results = { "sum_rolls": sum_rolls, "ob_rolls": ob_rolls, "raw_rolls": raw_rolls,"sixes": sixes, "total": total }
+    
     await ctx.send(results)
 
 @bot.event
