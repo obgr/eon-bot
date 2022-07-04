@@ -14,7 +14,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = os.getenv('BOT_PREFIX')
 
 description = """
-Eon-Bot - 
+Eon-Bot - https://github.com/obgr/eon-bot
 """
 
 intents = discord.Intents.default()
