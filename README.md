@@ -31,6 +31,7 @@ Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
 podman version 3.4.4
 ```
 For Autostarting podman containers generate a systemd init file with ```podman generate systemd```
+
 https://docs.podman.io/en/latest/markdown/podman-generate-systemd.1.html#examples
 
 ### Requirements for Running manually
@@ -56,6 +57,7 @@ python3 -m pip install -U py-cord --pre
 write a .env file based from src/.env.example
 generate an api token from [discord's developer portal](https://discord.com/developers/).
 Join bot to your discord server from the developer portal.
+
 https://discord.com/developers/
 
 # RUN 
@@ -85,5 +87,41 @@ docker run -d \
  --mount type=bind,source=src/.env,target=/app/src/.env,readonly \
  --restart unless-stopped \
  eon-bot:1.0
+
+```
+
+# Using the bot.
+When bot is mentioned or when prefix is written, the bot will listen to commands.
+
+## Syntax
+### roll
+Format has to be in NtN+N, NtN, NdN+N or NdN.
+
+Can also be written with capital letters: ie NT6+N
+
+Example
+```
+# Regular scalable dice
+?roll 1t100
+?roll 2T20+2
+?roll 3d6+3
+```
+
+### ob
+Format has to be in Nt6+N, Nt6, Nd6+N or Nd6.
+
+if anything else than a 6 is supplied, it will be ignored. T6/D6 dice are hardcoded for the ob dice.
+
+Can also be written with capital letters: ie NT6+N
+
+Example
+```
+# ob dice
+?ob 1t6
+?ob 2T6+2
+?ob 4d6+3
+
+# This example will still use a six sided die.
+?ob 4t8 
 
 ```

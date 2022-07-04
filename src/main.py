@@ -23,13 +23,44 @@ intents.message_content = True
  
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), description=description, intents=intents)
 bot.connections = {}
+
+@bot.command()
+async def syntax(ctx: commands.Context ):
+    """Shows example syntax"""
+    results = """
+    Hello There,
+    Im your friendly neighborhood discord bot.
+
+    This is my syntax
+    ```
+    # Regular scalable dice
+    Format has to be in NtN+N, NtN, NdN+N or NdN.
+    Can also be written with capital letters: ie NT6+N
+    # Example
+    {PREFIX}roll 1t100
+    {PREFIX}roll 2T20+2
+    {PREFIX}roll 3d6+3
  
+ 
+    # ob dice
+    Roll D6 die/dice, roll two additional dice per rolled 6.
+    Format has to be in Nt6+N, Nt6, Nd6+N or Nd6.
+    if anything else than a 6 is supplied, it will be ignored. T6/D6 dice are hardcoded for the ob dice.
+    Can also be written with capital letters: ie NT6+N
+    # Example
+    {PREFIX}ob 1t6
+    {PREFIX}ob 2T6+2
+    {PREFIX}ob 4d6+3
+    # This example will still use a six sided die.
+    {PREFIX}ob 4t8 
+    ```
+    """ .format(PREFIX=PREFIX)
+    await ctx.send(results)
+
 @bot.command()
 async def roll(ctx: commands.Context, roll: str):
     """
-    Scalable dice roller
-    Rolls a die in NtN+bonus or NtN format.
-    Example: 4t6+2 or 1t100 
+    Scalable dice, Rolls a die in NdN+bonus or NtN format.
     """
     try:
          # Pattern to split: "[(T|t|D|d)+$]\s*"
@@ -55,7 +86,9 @@ async def roll(ctx: commands.Context, roll: str):
 
 @bot.command()
 async def ob(ctx: commands.Context, roll: str):
-    """Rolls a die in Nt6+bonus format."""
+    """
+    ob dice, Rolls two additional dice for each rolled six.
+    """
     try:
         # Pattern to split: "[(T|t|D|d)+$]\s*"
         RollSplit = re.split(r"[(T|t|D|d)+$]\s*", roll)
