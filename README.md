@@ -1,0 +1,89 @@
+# eon-bot
+Discord Bot assaistant for EON, an RPG from Helmgast.
+
+Written for python 3.10
+
+## Requirements
+You can run manually or in a container.
+### Requirements for Running dockerized
+Docker:
+```
+# Install from repo or directly from docker.com
+# https://docs.docker.com/engine/install/ubuntu/
+sudo apt update \
+&& sudo apt install -y \
+                docker.io 
+```
+
+podman:
+podman also works. https://podman.io/
+```
+sudo apt update \
+&& sudo apt install -y \
+                podman \
+                podman-docker
+
+# You can now run docker commands "with podman".
+$ podman --version
+podman version 3.4.4
+$ docker --version
+Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+podman version 3.4.4
+```
+For Autostarting podman containers generate a systemd init file with ```podman generate systemd```
+https://docs.podman.io/en/latest/markdown/podman-generate-systemd.1.html#examples
+
+### Requirements for Running manually
+```
+sudo apt update \
+&& sudo apt install -y \
+                python3 \
+                python3-venv \
+                python3-pip \
+
+```
+
+## Virtual Environment
+```
+mkdir venv
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+python3 -m pip install -U py-cord --pre
+```
+
+# CONFIGURATION!
+write a .env file based from src/.env.example
+generate an api token from [discord's developer portal](https://discord.com/developers/).
+Join bot to your discord server from the developer portal.
+https://discord.com/developers/
+
+# RUN 
+
+## Run Manually
+```
+cd ~/git/eon-bot
+source venv/bin/activate
+python3 src/main.py
+```
+
+## Run Docker container
+make sure you have docker prereqs.
+### Scripted build/startup
+```
+chmod +x start_dockerized.sh
+./start_dockerized.sh
+```
+
+### Manual
+
+```
+# Build
+docker build -f Dockerfile -t eon-bot:1.0
+# Run
+docker run -d \
+ --mount type=bind,source=src/.env,target=/app/src/.env,readonly \
+ --restart unless-stopped \
+ eon-bot:1.0
+
+```

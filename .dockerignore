@@ -1,0 +1,3 @@
+# Files to ignore when building docker image
+.env
+__pycache__
