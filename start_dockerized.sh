@@ -7,7 +7,7 @@ IMAGEVER="1.0"
 docker build -f Dockerfile -t ${CONTAINERNAME}:${IMAGEVER}
 # Run Image
 docker run -d \
- --mount type=bind,source=src/.env,target=/app/src/.env,readonly \
+ --mount type=bind,source=$PWD/src/.env,target=/app/src/.env,readonly \
  --restart unless-stopped \
  --name ${CONTAINERNAME} \
  ${CONTAINERNAME}:${IMAGEVER}
