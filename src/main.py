@@ -12,6 +12,8 @@ from modules.dice import ob_dice
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = os.getenv('BOT_PREFIX')
+emoji_die = "\U0001F3B2"
+emoji_roll = "\U0001F9FB"
 
 description = """
 Eon-Bot - https://github.com/obgr/eon-bot
@@ -122,7 +124,9 @@ async def roll(ctx: commands.Context, roll: str):
     except ValueError:
         await ctx.send("Format has to be in NtN+N, NtN, NdN+N or NdN")
         return
-    
+
+    await ctx.message.add_reaction(emoji_roll)
+    await ctx.message.add_reaction(emoji_die)
     await ctx.send(results)
 
 @bot.command()
@@ -163,6 +167,8 @@ async def ob(ctx: commands.Context, roll: str):
         await ctx.send("Format has to be in Nd6+N, Nd6, Nt6+N or Nt6")
         return
     
+    await ctx.message.add_reaction(emoji_roll)
+    await ctx.message.add_reaction(emoji_die)
     await ctx.send(results)
 
 @bot.event
