@@ -112,7 +112,7 @@ async def roll(ctx: commands.Context, roll: str):
         semiPrettyRolls=', '.join(raw_rolls)
         user = nick_or_username(ctx)
 
-        results = "{USER} Rolled\n".format(USER=user)
+        results = "{USER} rolled {ROLL}\n".format(USER=user, ROLL=roll.upper)
         results = results + "Rolls............ : {ROLLS}".format(ROLLS=semiPrettyRolls)
         if int(bonus) != 0:
             results = results + "+ {BONUS}\n".format(BONUS=bonus)
@@ -150,7 +150,7 @@ async def ob(ctx: commands.Context, roll: str):
         pretty_rolls=prettifyDice(ob_rolls)
         user = nick_or_username(ctx)     
 
-        results = "{USER} Rolled\n".format(USER=user)
+        results = "{USER} rolled {ROLL}\n".format(USER=user, ROLL=roll.upper)
         if sixes != 0:
             results = results + "No. Sixes.... : {SIXES}\n".format(SIXES=sixes)
         results = results + "Rolls............ : {ROLLS}".format(ROLLS=pretty_rolls)
