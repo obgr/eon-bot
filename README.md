@@ -16,7 +16,7 @@ sudo apt update \
 ```
 
 podman:
-podman also works. https://podman.io/
+podman also works, its an easy way to run in WSL due to systemd. https://podman.io/
 ```
 sudo apt update \
 && sudo apt install -y \
