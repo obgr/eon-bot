@@ -14,6 +14,10 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = os.getenv('BOT_PREFIX')
 emoji_die = "\U0001F3B2"
 emoji_roll = "\U0001F9FB"
+emoji_mage = "\U0001F9D9"
+emoji_l = ":regional_indicator_l:"
+emoji_o = ":regional_indicator_o:"
+emoji_s = ":regional_indicator_s:"
 
 description = """
 Eon-Bot - https://github.com/obgr/eon-bot
@@ -53,10 +57,13 @@ def nick_or_username(ctx):
     #ctx.message.author
     #ctx.message.author.nick
     #ctx.message.author.id
-    if ctx.message.author.nick == None:
+    if hasattr(ctx.message.author, 'nick'):
+        if ctx.message.author.nick == None:
+            out = ctx.message.author
+        elif ctx.message.author.nick != None:
+            out = ctx.message.author.nick
+    else:
         out = ctx.message.author
-    elif ctx.message.author.nick != None:
-        out = ctx.message.author.nick
     return out
 
 @bot.command()
@@ -125,8 +132,8 @@ async def roll(ctx: commands.Context, roll: str):
         await ctx.send("Format has to be in NtN+N, NtN, NdN+N or NdN")
         return
 
-    await ctx.message.add_reaction(emoji_roll)
     await ctx.message.add_reaction(emoji_die)
+    await ctx.message.add_reaction(emoji_roll)
     await ctx.send(results)
 
 @bot.command()
@@ -166,9 +173,14 @@ async def ob(ctx: commands.Context, roll: str):
     except ValueError:
         await ctx.send("Format has to be in Nd6+N, Nd6, Nt6+N or Nt6")
         return
-    
-    await ctx.message.add_reaction(emoji_roll)
-    await ctx.message.add_reaction(emoji_die)
+    print(sum_rolls)
+    print (int(RollSplit[0]))
+    print(int(RollSplit[0]) * 2)
+    if sum_rolls < (int(RollSplit[0]) * 2):
+        await ctx.message.add_reaction(emoji_mage)
+    else:
+        await ctx.message.add_reaction(emoji_die)
+        await ctx.message.add_reaction(emoji_roll)
     await ctx.send(results)
 
 @bot.event
