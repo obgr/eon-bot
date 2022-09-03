@@ -1,0 +1,61 @@
+@bot.command()
+async def ob(ctx: commands.Context, roll: str):
+    """
+    ob dice, Rolls two additional dice for each rolled six.
+    """
+    # print(ctx.message.author.id)
+    # print(ctx.message.author)
+    # print(ctx.message.author.nick)
+    try:
+        # Pattern to split: "[(T|t|D|d)+$]\s*"
+        RollSplit = re.split(r"[(T|t|D|d)+$]\s*", roll)
+        number_of_rolls = RollSplit[0]
+        # sides_to_die=RollSplit[1]
+        if len(RollSplit) == 2:
+            # If Null set to 0
+            bonus = 0
+        elif len(RollSplit) == 3:
+            bonus = RollSplit[2]
+        else:
+            if DEBUG is True:
+                print("len of RollSplit should only be 2 or 3")
+                print("Len: ", len(RollSplit))
+        sum_rolls, ob_rolls, raw_rolls, sixes, total = ob_dice(
+            int(number_of_rolls),
+            int(bonus)
+            )
+        pretty_rolls = prettifyDice(ob_rolls)
+        user = nick_or_username(ctx)
+
+        results = "{USER} rolled ob{ROLL}\n".format(
+            USER=user, ROLL=roll.upper()
+            )
+        if sixes != 0:
+            results = results + "No. Sixes.... : {SIXES}\n".format(
+                SIXES=sixes
+                )
+        results = results + "Rolls............ : {ROLLS}".format(
+            ROLLS=pretty_rolls
+            )
+        if int(bonus) != 0:
+            results = results + "+ {BONUS}\n".format(
+                BONUS=bonus
+                )
+        else:
+            results = results + "\n"
+        results = results + "Total.............: {TOTAL}".format(
+            TOTAL=total
+            )
+    except ValueError:
+        await ctx.send("Format has to be in Nd6+N, Nd6, Nt6+N or Nt6")
+        return
+    if DEBUG is True:
+        print(sum_rolls)
+        print(int(RollSplit[0]))
+        print(int(RollSplit[0]) * 2)
+    if sum_rolls < (int(RollSplit[0]) * 2):
+        await ctx.message.add_reaction(emoji_bad_roll)
+    else:
+        await ctx.message.add_reaction(emoji_die)
+        await ctx.message.add_reaction(emoji_roll)
+    await ctx.send(results)
