@@ -9,17 +9,19 @@ import re
 from modules.dice import dice
 from modules.dice import ob_dice
 
+# Variables from .env
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = os.getenv('BOT_PREFIX')
 DEBUG = os.getenv('DEBUG')
-emoji_die = "\U0001F3B2"
-emoji_roll = "\U0001F9FB"
-emoji_bad_roll = "\U0001F9D9"
 
+# General Variables
 description = """
 Eon-Bot - https://github.com/obgr/eon-bot
 """
+emoji_die = "\U0001F3B2"
+emoji_roll = "\U0001F9FB"
+emoji_bad_roll = "\U0001F9D9"
 
 # Result vars for discord printout
 string_total = "Total.............:"

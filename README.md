@@ -81,13 +81,13 @@ chmod +x start_dockerized.sh
 
 ```
 # Build
-docker build . -t eon-bot:1.0
+docker build . -t eon-bot:1.1
 # Run
 docker run -d \
  --mount type=bind,source=$PWD/src/.env,target=/app/src/.env,readonly \
  --restart unless-stopped \
  --name eon-bot \
- eon-bot:1.0
+ eon-bot:1.1
 
 ```
 
