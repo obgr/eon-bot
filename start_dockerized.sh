@@ -1,7 +1,7 @@
 #!/bin/bash
 # Vars
 CONTAINERNAME="eon-bot"
-IMAGEVER="1.0"
+IMAGEVER="1.1"
 
 # Build Image
 docker build . -t ${CONTAINERNAME}:${IMAGEVER}
