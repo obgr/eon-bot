@@ -82,21 +82,21 @@ chmod +x start_dockerized.sh
 
 ```
 # Build
-docker build . -t eon-bot:1.1
+docker build . -t eon-bot:1.2.0
 # Run
 docker run -d \
  --mount type=bind,source=$PWD/src/.env,target=/app/src/.env,readonly \
  --restart unless-stopped \
  --name eon-bot \
- eon-bot:1.1
+ eon-bot:1.2.0
 
 ```
 
 # Using the bot.
-When bot is mentioned or when prefix is written, the bot will listen to commands.
+Slash commands! You may use discord's slash commands in order to use the bot.
 
 ## Syntax
-### roll
+### /roll
 Format has to be in NtN+N, NtN, NdN+N or NdN.
 
 Can also be written with capital letters: ie NT6+N
@@ -104,12 +104,12 @@ Can also be written with capital letters: ie NT6+N
 Example
 ```
 # Regular scalable dice
-?roll 1t100
-?roll 2T20+2
-?roll 3d6+3
+/roll 1d100
+/roll 2T20+2
+/roll 3d6+3
 ```
 
-### ob
+### /ob
 Format has to be in Nt6+N, Nt6, Nd6+N or Nd6.
 
 if anything else than a 6 is supplied, it will be ignored. T6/D6 dice are hardcoded for the ob dice.
@@ -119,11 +119,31 @@ Can also be written with capital letters: ie NT6+N
 Example
 ```
 # ob dice
-?ob 1t6
-?ob 2T6+2
-?ob 4d6+3
+/ob 1t6
+/ob 2T6+2
+/ob 4d6+3
 
 # This example will still use a six sided die.
-?ob 4t8 
+/ob 4t8 
 
 ```
+
+### /fight
+Will roll ob +t100 dice for use in a fight.\n
+User runs ```/fight <diceroll of weapon>```\n
+
+Example:
+```
+/fight 3t6+1
+
+Output example:
+
+```
+
+# Limitations
+This bot is limited by the size of discord messages as well as sizes of some data types. Therefor, by design of the infinite dice, you may reroll a d6 500 times and hit these limits.
+
+
+This is a known bug.
+
+Accidentally summoning a cosmic horror monster on the outskirts of a semi-large town is not always appreciated by the game master.
