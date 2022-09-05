@@ -136,3 +136,11 @@ ob result
 qt100 hit table result
 
 possible value lookup for t100 if supplied.
+
+# Limitations
+This bot is limited by the size of discord messages as well as sizes of some data types. Therefor, by design of the infinite dice, you may reroll a d6 500 times and hit these limits.
+
+
+This is a known bug.
+
+Accidentally summoning a cosmic horror monster on the outskirts of a semi-large town is not always appreciated by the game master.
