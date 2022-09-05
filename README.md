@@ -129,15 +129,17 @@ Example
 ```
 
 ### /fight
-Will roll ob +t100 dice for use in a fight.\n
-User runs ```/fight <diceroll of weapon>```\n
+Will roll ob +t100 dice for use in a fight.
+User runs ```/fight <diceroll of weapon>```
 
 Example:
 ```
 /fight 3t6+1
 
 Output example:
-
+OB Rolls.....: 2️⃣,5️⃣+ 2
+OB Total.....: 9
+d100 Total...: 35
 ```
 
 # Limitations
