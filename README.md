@@ -134,7 +134,7 @@ User runs ```/fight <diceroll of weapon>```
 
 Example:
 ```
-/fight 3t6+1
+/fight 2t6+2
 
 Output example:
 OB Rolls.....: 2️⃣,5️⃣+ 2
