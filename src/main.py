@@ -91,14 +91,14 @@ async def roll(ctx, roll: discord.Option(str)):
 @bot.command(
     description="""
     ob dice, replace sixes with two additional dice.
-    D6 Hardcoded. Example: /ob 3t6+3
+    D6 Hardcoded. Example: /ob 3d6+3
     """)
-async def ob(ctx, roll: discord.Option(str)):
+async def ob(ctx, ob_roll: discord.Option(str)):
     rollType = "ob"
     try:
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
-            roll,
+            ob_roll,
             rollType,
             DEBUG
             )
@@ -112,7 +112,7 @@ async def ob(ctx, roll: discord.Option(str)):
 
         # Build result string
         results = string_rolled + " {ROLL}\n".format(
-            ROLL=roll.upper()
+            ROLL=ob_roll.upper()
             )
 
         if sixes != 0:
@@ -162,12 +162,12 @@ async def ob(ctx, roll: discord.Option(str)):
     Example: /fight 2t6+2
     """
     )
-async def fight(ctx, roll: discord.Option(str)):
+async def fight(ctx, ob_roll: discord.Option(str)):
     rollType = "ob"
     try:
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
-            roll,
+            ob_roll,
             rollType,
             DEBUG
             )

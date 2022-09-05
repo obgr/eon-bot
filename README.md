@@ -129,13 +129,16 @@ Example
 ```
 
 ### /fight
-Will roll several dice for use in a fight.
-User runs /fight <diceroll of weapon> <Where to hit. normal/high/low N/H/L>
-Outputs:
-ob result
-qt100 hit table result
+Will roll ob +t100 dice for use in a fight.\n
+User runs ```/fight <diceroll of weapon>```\n
 
-possible value lookup for t100 if supplied.
+Example:
+```
+/fight 3t6+1
+
+Output example:
+
+```
 
 # Limitations
 This bot is limited by the size of discord messages as well as sizes of some data types. Therefor, by design of the infinite dice, you may reroll a d6 500 times and hit these limits.
