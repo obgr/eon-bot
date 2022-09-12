@@ -9,27 +9,13 @@ import discord
 from dotenv import load_dotenv
 
 # Local Imports
-from modules.dice import dice
-from modules.dice import ob_dice
-from modules.functions import prettifyDice
-from modules.functions import splitRollString
+from modules.commands import rollDice, rollInfiniteDice, rollForFight
 
 # Variables from .env
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 DEBUG = os.getenv('DEBUG')
 DEBUG_GUILDS = os.getenv('DEBUG_GUILDS')
-
-# General Variables
-description = """
-Eon-Bot - https://github.com/obgr/eon-bot
-"""
-
-# Result vars for discord printout
-string_rolled = "Rolled :"
-string_total = "Total............ :"
-string_rolls = "Rolls............ :"
-string_sixes = "No. Sixes.... :"
 
 if DEBUG_GUILDS is None:
     bot = discord.Bot()
@@ -43,171 +29,80 @@ async def ping(ctx):
     await ctx.respond(f"Pong! Latency is {bot.latency}")
 
 
+@bot.command(description="About Bot")
+async def about(ctx):
+    message = """
+    Hi, My name is {BOT}.
+You can find my source code below.
+Eon-Bot - https://github.com/obgr/eon-bot
+""".format(
+        BOT=bot.user
+        )
+    await ctx.respond(message)
+
+
+@bot.command(
+    description="""
+    Ask bot to send a DM. Useful for secret dice rolls.
+"""
+    )
+async def dm(ctx):
+    message = """
+    Hello,
+You may send slash commands directly to me in this private chat.
+"""
+    reply = "You got a DM {AUTHOR}".format(
+        AUTHOR=ctx.author
+        )
+    try:
+        await ctx.author.send(message)
+        if DEBUG == "True":
+            print("Successfully sent DM!")
+        await ctx.respond(reply)
+    except ValueError:
+        if DEBUG == "True":
+            print("Unsuccessfull in sending DM")
+
+
 @bot.command(
     description="""
     Scalable dice, Rolls a die in NdN+bonus or NtN format.
-    Example: /roll 1d100
-    """
+Example: /roll 1d100
+"""
     )
 async def roll(ctx, roll: discord.Option(str)):
-    rollType = "roll"
-    try:
-        # Split roll to vars
-        number_of_rolls, sides_to_die, bonus = splitRollString(
-            roll,
-            rollType,
-            DEBUG
-            )
-        # Roll the dice
-        sum_rolls, raw_rolls, total = dice(
-            int(number_of_rolls),
-            int(bonus),
-            int(sides_to_die)
-            )
-
-        # Make Pretty
-        semiPrettyRolls = ', '.join(raw_rolls)
-
-        # Build result string
-        results = string_rolled + " {ROLL}\n".format(
-            ROLL=roll.upper()
-            )
-        results = results + string_rolls + " {ROLLS}".format(
-            ROLLS=semiPrettyRolls
-            )
-        if int(bonus) != 0:
-            results = results + "+ {BONUS}\n".format(BONUS=bonus)
-        else:
-            results = results + "\n"
-        results = results + string_total + " {TOTAL}".format(TOTAL=total)
-    except ValueError:
-        await ctx.respond("Format has to be in NtN+N, NtN, NdN+N or NdN")
-        return
-
-    # send results
+    results = rollDice(roll, DEBUG)
     await ctx.respond(results)
 
 
 @bot.command(
     description="""
-    ob dice, replace sixes with two additional dice.
-    D6 Hardcoded. Example: /ob 3d6+3
-    """)
+    infinite dice. Replace sixes with two additional dice.
+D6 only. Example: /ob 3d6+3
+""")
+async def inf(ctx, inf_roll: discord.Option(str)):
+    results = rollInfiniteDice(inf_roll, DEBUG)
+    await ctx.respond(results)
+
+
+@bot.command(
+    description="""
+    ob dice. Replace sixes with two additional dice.
+T6 only. Example: /ob 3d6+3
+""")
 async def ob(ctx, ob_roll: discord.Option(str)):
-    rollType = "ob"
-    try:
-        # Split roll to vars
-        number_of_rolls, sides_to_die, bonus = splitRollString(
-            ob_roll,
-            rollType,
-            DEBUG
-            )
-        # Roll the dice
-        sum_rolls, ob_rolls, raw_rolls, sixes, total = ob_dice(
-            int(number_of_rolls),
-            int(bonus)
-            )
-        # Make Pretty
-        pretty_rolls = prettifyDice(ob_rolls)
-
-        # Build result string
-        results = string_rolled + " {ROLL}\n".format(
-            ROLL=ob_roll.upper()
-            )
-
-        if sixes != 0:
-            results = results + string_sixes + " {SIXES}\n".format(
-                SIXES=sixes
-                )
-        results = results + string_rolls + " {ROLLS}".format(
-            ROLLS=pretty_rolls
-            )
-        if int(bonus) != 0:
-            results = results + "+ {BONUS}\n".format(
-                BONUS=bonus
-                )
-        else:
-            results = results + "\n"
-
-        results = results + string_total + " {TOTAL}".format(
-            TOTAL=total
-            )
-    except ValueError:
-        await ctx.respond("Format has to be in Nd6+N, Nd6, Nt6+N or Nt6")
-        return
-
-    # Debug some roll info for bad roll algorithm.
-    if DEBUG == "True":
-        print("\nBad Roll Debug")
-        print(sum_rolls)
-        print(int(number_of_rolls))
-        print(int(number_of_rolls) * 2)
-
-    # Determine if its a bad roll.
-    # if sum_rolls < (int(number_of_rolls) * 2):
-    #     # React
-    #     await ctx.message.add_reaction(emoji_bad_roll)
-    # else:
-    #     # React
-    #     await ctx.message.add_reaction(emoji_die)
-    #     await ctx.message.add_reaction(emoji_roll)
-
-    # Send results
+    results = rollInfiniteDice(ob_roll, DEBUG)
     await ctx.respond(results)
 
 
 @bot.command(
     description="""
     Roll for Fight, rolls ob + t100 for hit.
-    Example: /fight 2t6+2
-    """
+Example: /fight 2t6+2
+"""
     )
 async def fight(ctx, ob_roll: discord.Option(str)):
-    rollType = "ob"
-    try:
-        # Split roll to vars
-        number_of_rolls, sides_to_die, bonus = splitRollString(
-            ob_roll,
-            rollType,
-            DEBUG
-            )
-
-        # Roll the ob/infinite dice
-        ob_sum_rolls, ob_rolls, ob_raw_rolls, ob_sixes, ob_total = ob_dice(
-            int(number_of_rolls),
-            int(bonus)
-            )
-
-        # Roll the t100 die
-
-        d100_sum_rolls, d100_raw_rolls, d100_total = dice(
-            int(1),
-            int(0),
-            int(100)
-            )
-
-        # Make Pretty
-        pretty_rolls = prettifyDice(ob_rolls)
-        # semiPrettyRolls = ', '.join(d100_raw_rolls)
-
-        # Build result string
-        # results = string_rolled + " {ROLL}\n".format(
-        #    ROLL=roll.upper()
-        #    )
-        results = "OB Rolls.....: {ROLLS}".format(
-            ROLLS=pretty_rolls
-            )
-        if int(bonus) != 0:
-            results = results + "+ {BONUS}\n".format(BONUS=bonus)
-        else:
-            results = results + "\n"
-        results = results + "OB Total.....: {TOTAL}\n".format(TOTAL=ob_total)
-        results = results + "d100 Total : {TOTAL}\n".format(TOTAL=d100_total)
-    except ValueError:
-        await ctx.respond("Format has to be in NtN+N, NtN, NdN+N or NdN")
-        return
-
-    # send results
+    results = rollForFight(ob_roll, DEBUG)
     await ctx.respond(results)
 
 
@@ -217,6 +112,7 @@ async def on_ready():
     print(f"Logged in as {bot.user}")
     print(f"Latency is {bot.latency}")
     print(f"Debug is {DEBUG}")
-    print(f"DEBUG_GUILDS is {DEBUG_GUILDS}")
+    if DEBUG == "True":
+        print(f"DEBUG_GUILDS is {DEBUG_GUILDS}")
 
 bot.run(TOKEN)

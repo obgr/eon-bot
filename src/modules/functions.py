@@ -57,7 +57,7 @@ def splitRollString(roll: str, rollType: str, DEBUG):
     # Validate content
     if DEBUG == "True":
         print("\nRollSplit Debug")
-        print("Rolls : ", number_of_rolls)
-        print("Sides : ", sides_to_die)
-        print("Bonus : ", bonus)
+        print(f"Rolls : {number_of_rolls}")
+        print(f"Sides : {sides_to_die}")
+        print(f"Bonus : {bonus}")
     return number_of_rolls, sides_to_die, bonus

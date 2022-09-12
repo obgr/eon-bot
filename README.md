@@ -1,4 +1,6 @@
 # eon-bot
+<img src="images/logo.png" width=20% height=20%>
+
 Discord dice roller bot for Eon, a tabletop RPG by Helmgast.
 Rolls regular dice as well as whats known as an ob die (d6/t6) or infinite die (replace rolled six with two additional dice).
 
