@@ -55,13 +55,13 @@ async def cs(ctx):
             activity=discord.Activity(
                 type=discord.ActivityType.watching,
                 name=activity
-                )
+            )
         )
     else:
         print("Unsupported activity type")
     await ctx.respond(
         f"{activity_type} {activity}, give me some time to update my status."
-        )
+    )
 
 
 @bot.command(description="About Bot")
@@ -72,7 +72,7 @@ You can find my source code below.
 Eon-Bot - https://github.com/obgr/eon-bot
 """.format(
         BOT=bot.user
-        )
+    )
     await ctx.respond(message)
 
 
@@ -80,7 +80,7 @@ Eon-Bot - https://github.com/obgr/eon-bot
     description="""
     Ask bot to send a DM. Useful for secret dice rolls.
 """
-    )
+)
 async def dm(ctx):
     message = """
     Hello,
@@ -88,7 +88,7 @@ You may send slash commands directly to me in this private chat.
 """
     reply = "You got a DM {AUTHOR}".format(
         AUTHOR=ctx.author
-        )
+    )
     try:
         await ctx.author.send(message)
         if debug == "True":
@@ -104,7 +104,7 @@ You may send slash commands directly to me in this private chat.
     Scalable dice, Rolls a die in NdN+bonus or NtN format.
 Example: /roll 1d100
 """
-    )
+)
 async def roll(ctx, roll: discord.Option(str)):
     results = rollDice(roll, debug)
     await ctx.respond(results)
@@ -135,7 +135,7 @@ async def ob(ctx, ob_roll: discord.Option(str)):
     Fight assistant, rolls ob + t100 for hit.
 Example: /fight 5t6+2
 """
-    )
+)
 async def fight(ctx, ob_roll: discord.Option(str)):
     results = rollForFight(ob_roll, debug)
     await ctx.respond(results)
@@ -145,15 +145,18 @@ async def fight(ctx, ob_roll: discord.Option(str)):
     description="""
     Lookup values in the hit tables.
 """
-    )
+)
 async def lookup(
     ctx,
-    debug,
     weapon_type: discord.Option(str),
-    code_type: discord.Option(str),
-    value: discord.Option(int)
+    aim: discord.Option(str),
+    t100: discord.Option(int)
 ):
-    results = lookupFunc(data_file, weapon_type, code_type, value)
+    out = lookupFunc(data_file, weapon_type, aim, t100, debug)
+    results = f"""
+Command : /lookup weapon_type:{weapon_type} aim:{aim}, t100:{t100}
+Target        : {out[0]}, {out[1]}
+"""
     await ctx.respond(results)
 
 
@@ -172,7 +175,7 @@ async def on_ready():
             activity=discord.Activity(
                 type=discord.ActivityType.listening,
                 name=activity
-                )
+            )
         )
     elif activity_type == "watching":
         await bot.change_presence(
@@ -180,12 +183,13 @@ async def on_ready():
             activity=discord.Activity(
                 type=discord.ActivityType.watching,
                 name=activity
-                )
+            )
         )
     else:
         print("Unsupported activity type")
     print(f"Logged in as {bot.user}")
     print(f"Latency is {bot.latency}")
+    print(f"Activity is {activity_type}: {activity}")
     print(f"Debug is {debug}")
     if debug == "True":
         print(f"debug_guilds is {debug_guilds}")

@@ -106,9 +106,18 @@ docker run -d \
 Slash commands! You may use discord's slash commands in order to use the bot.
 
 ## Syntax
+### /about - About
+eon-bot will send a link to the Github page.
+
+### /cs - Change status
+eon-bot will change it's status to a random preset.
+
 ### /dm - Direct message
 eon-bot will send a direct message to the user.
 Useful for secret dice rolls or lookups.
+
+### /Ping - send Latency
+eon-bot will send a message containing the ping of the bot.
 
 ### /roll - Scalable dice
 Format has to be in NtN+N, NtN, NdN+N or NdN.
@@ -162,6 +171,26 @@ Output example:
 OB Rolls.....: 2️⃣,5️⃣+ 2
 OB Total.....: 9
 d100 Total...: 35
+```
+
+### /lookup - Lookup hit tables
+Work in progress - for now hit tables, damage tables to be added.
+Supply your weapon type, aim (will rename this, normal, high, low) and the value of a rolled t100 and get where you hit.
+
+Example:
+```
+/lookup <weapon_type> <aim> <t100>
+
+weapon_type : slash/blunt/range/pierce
+        or  : s/b/r/p
+target      : normal/high/low
+        or  : n/h/l
+t100        : 1-100
+
+Output example:
+Command : /lookup weapon_type:r aim:l, t100:7
+Target  : Torso, Bröstkorg
+
 ```
 
 # Limitations

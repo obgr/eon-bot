@@ -101,13 +101,13 @@ def rollDice(roll: str, debug):
             roll,
             rollType,
             debug
-            )
+        )
         # Roll the dice
         sum_rolls, raw_rolls, total = dice(
             int(number_of_rolls),
             int(bonus),
             int(sides_to_die)
-            )
+        )
 
         # Make Pretty
         semiPrettyRolls = ', '.join(raw_rolls)
@@ -115,10 +115,10 @@ def rollDice(roll: str, debug):
         # Build result string
         results = string_rolled + " {ROLL}\n".format(
             ROLL=roll.upper()
-            )
+        )
         results = results + string_rolls + " {ROLLS}".format(
             ROLLS=semiPrettyRolls
-            )
+        )
         if int(bonus) != 0:
             results = results + "+ {BONUS}\n".format(BONUS=bonus)
         else:
@@ -139,37 +139,37 @@ def rollInfiniteDice(ob_roll: str, debug):
             ob_roll,
             rollType,
             debug
-            )
+        )
         # Roll the dice
         sum_rolls, ob_rolls, raw_rolls, sixes, total = ob_dice(
             int(number_of_rolls),
             int(bonus)
-            )
+        )
         # Make Pretty
         pretty_rolls = prettifyDice(ob_rolls)
 
         # Build result string
         results = string_rolled + " {ROLL}\n".format(
             ROLL=ob_roll.upper()
-            )
+        )
 
         if sixes != 0:
             results = results + string_sixes + " {SIXES}\n".format(
                 SIXES=sixes
-                )
+            )
         results = results + string_rolls + " {ROLLS}".format(
             ROLLS=pretty_rolls
-            )
+        )
         if int(bonus) != 0:
             results = results + "+ {BONUS}\n".format(
                 BONUS=bonus
-                )
+            )
         else:
             results = results + "\n"
 
         results = results + string_total + " {TOTAL}".format(
             TOTAL=total
-            )
+        )
     except Exception as e:
         print(e)
         print("\nBad Roll Debug")
@@ -203,13 +203,13 @@ def rollForFight(ob_roll: str, debug):
             ob_roll,
             rollType,
             debug
-            )
+        )
 
         # Roll the ob/infinite dice
         ob_sum_rolls, ob_rolls, ob_raw_rolls, ob_sixes, ob_total = ob_dice(
             int(number_of_rolls),
             int(bonus)
-            )
+        )
 
         # Roll the t100 die
 
@@ -217,7 +217,7 @@ def rollForFight(ob_roll: str, debug):
             int(1),
             int(0),
             int(100)
-            )
+        )
 
         # Make Pretty
         pretty_rolls = prettifyDice(ob_rolls)
@@ -229,7 +229,7 @@ def rollForFight(ob_roll: str, debug):
         #    )
         results = "OB Rolls.....: {ROLLS}".format(
             ROLLS=pretty_rolls
-            )
+        )
         if int(bonus) != 0:
             results = results + "+ {BONUS}\n".format(BONUS=bonus)
         else:
@@ -243,7 +243,13 @@ def rollForFight(ob_roll: str, debug):
 
 
 # Lookup tables
-def lookupFunc(debug: str, sqlite3_file: str, weapon_type: str, code: str, t100: int):
+def lookupFunc(
+    sqlite3_file: str,
+    weapon_type: str,
+    target: str,
+    t100: int,
+    debug: str
+):
     # regexp for code
     # regex = r'[0-9]+(T|t|D|d)[0-9]+($|\+[0-9]+$)'
     # if re.match(regex, roll):
@@ -264,26 +270,26 @@ def lookupFunc(debug: str, sqlite3_file: str, weapon_type: str, code: str, t100:
     lookup = "AREA, TARGET"
 
     # IF code
-    if re.match(re_n, code, re.IGNORECASE):
+    if re.match(re_n, target, re.IGNORECASE):
         if debug == "True":
             print("matched normal")
-        code = "CODE_NORMAL"
-    elif re.match(re_h, code, re.IGNORECASE):
+        target = "CODE_NORMAL"
+    elif re.match(re_h, target, re.IGNORECASE):
         if debug == "True":
             print("matched high")
-        code = "CODE_HIGH"
-    elif re.match(re_l, code, re.IGNORECASE):
+        target = "CODE_HIGH"
+    elif re.match(re_l, target, re.IGNORECASE):
         if debug == "True":
             print("matched low")
-        code = "CODE_LOW"
-    elif code is None:
+        target = "CODE_LOW"
+    elif target is None:
         if debug == "True":
             print("code is None, defaulting to normal")
-        code = "CODE_NORMAL"
+        target = "CODE_NORMAL"
     # define code to lookup
     else:
-        print("code not matched")
-        print(code)
+        print("target not matched")
+        print(target)
         return 1
 
     # if weapon_type
@@ -314,12 +320,9 @@ def lookupFunc(debug: str, sqlite3_file: str, weapon_type: str, code: str, t100:
         return 1
 
     hit_table_out = sqlite_lookup(
-        sqlite3_file, code, hit_table, t100
-        )
+        sqlite3_file, target, hit_table, t100
+    )
     hit_table_lookup = sqlite_lookup(
         sqlite3_file, lookup, lookup_table, hit_table_out[0]
-        )
-    print(hit_table_out[0])
-    for i in hit_table_lookup:
-        print(i)
+    )
     return hit_table_lookup
