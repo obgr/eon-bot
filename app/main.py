@@ -10,24 +10,56 @@ import discord
 from dotenv import load_dotenv
 
 # Local Imports
-from modules.functions import rollDice, rollInfiniteDice, rollForFight
+from modules.functions import rollDice, rollInfiniteDice, rollForFight, getActivity  # noqa: E501
 
 # Variables from .env
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-DEBUG = os.getenv('DEBUG')
-DEBUG_GUILDS = os.getenv('DEBUG_GUILDS')
+token = os.getenv('discord_token')
+activities_json_file = os.getenv('activities_json_file')
+debug = os.getenv('debug')
+debug_guilds = os.getenv('debug_guilds')
 
-if DEBUG_GUILDS is None:
+if debug_guilds is None:
     bot = discord.Bot()
-elif DEBUG_GUILDS is not None:
-    bot = discord.Bot(debug_guilds=[DEBUG_GUILDS])
+elif debug_guilds is not None:
+    bot = discord.Bot(debug_guilds=[debug_guilds])
 
 
 # Commands
 @bot.command(description="Sends the bot's latency.")
 async def ping(ctx):
     await ctx.respond(f"Pong! Latency is {bot.latency}")
+
+
+@bot.command(description="Change bot discord status to a random preset")
+async def cs(ctx):
+    activity_type, activity = getActivity(activities_json_file)
+    if activity_type == "playing":
+        await bot.change_presence(
+            status=discord.Status.online,
+            activity=discord.Game(name=activity)
+        )
+    elif activity_type == "listening":
+        await bot.change_presence(
+            status=discord.Status.online,
+            activity=discord.Activity(
+                type=discord.ActivityType.listening,
+                name=activity
+            )
+        )
+    elif activity_type == "watching":
+        await bot.change_presence(
+            status=discord.Status.online,
+            activity=discord.Activity(
+                type=discord.ActivityType.watching,
+                name=activity
+                )
+        )
+    else:
+        print("Unsupported activity type")
+    await ctx.respond(
+        f"{activity_type} {activity}, give me some time to update."
+        )
 
 
 @bot.command(description="About Bot")
@@ -57,11 +89,11 @@ You may send slash commands directly to me in this private chat.
         )
     try:
         await ctx.author.send(message)
-        if DEBUG == "True":
+        if debug == "True":
             print("Successfully sent DM!")
         await ctx.respond(reply)
     except ValueError:
-        if DEBUG == "True":
+        if debug == "True":
             print("Unsuccessfull in sending DM")
 
 
@@ -72,7 +104,7 @@ Example: /roll 1d100
 """
     )
 async def roll(ctx, roll: discord.Option(str)):
-    results = rollDice(roll, DEBUG)
+    results = rollDice(roll, debug)
     await ctx.respond(results)
 
 
@@ -82,7 +114,7 @@ async def roll(ctx, roll: discord.Option(str)):
 D6 only. Example: /ob 3d6+3
 """)
 async def inf(ctx, inf_roll: discord.Option(str)):
-    results = rollInfiniteDice(inf_roll, DEBUG)
+    results = rollInfiniteDice(inf_roll, debug)
     await ctx.respond(results)
 
 
@@ -92,7 +124,7 @@ async def inf(ctx, inf_roll: discord.Option(str)):
 T6 only. Example: /ob 3d6+3
 """)
 async def ob(ctx, ob_roll: discord.Option(str)):
-    results = rollInfiniteDice(ob_roll, DEBUG)
+    results = rollInfiniteDice(ob_roll, debug)
     await ctx.respond(results)
 
 
@@ -103,18 +135,41 @@ Example: /fight 2t6+2
 """
     )
 async def fight(ctx, ob_roll: discord.Option(str)):
-    results = rollForFight(ob_roll, DEBUG)
+    results = rollForFight(ob_roll, debug)
     await ctx.respond(results)
 
 
 # Events
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Game(name="Eon"))
+    activity_type, activity = getActivity(activities_json_file)
+    if activity_type == "playing":
+        await bot.change_presence(
+            status=discord.Status.online,
+            activity=discord.Game(name=activity)
+        )
+    elif activity_type == "listening":
+        await bot.change_presence(
+            status=discord.Status.online,
+            activity=discord.Activity(
+                type=discord.ActivityType.listening,
+                name=activity
+                )
+        )
+    elif activity_type == "watching":
+        await bot.change_presence(
+            status=discord.Status.online,
+            activity=discord.Activity(
+                type=discord.ActivityType.watching,
+                name=activity
+                )
+        )
+    else:
+        print("Unsupported activity type")
     print(f"Logged in as {bot.user}")
     print(f"Latency is {bot.latency}")
-    print(f"Debug is {DEBUG}")
-    if DEBUG == "True":
-        print(f"DEBUG_GUILDS is {DEBUG_GUILDS}")
+    print(f"Debug is {debug}")
+    if debug == "True":
+        print(f"debug_guilds is {debug_guilds}")
 
-bot.run(TOKEN)
+bot.run(token)

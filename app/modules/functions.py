@@ -1,6 +1,8 @@
 #!/bin/python3
 
 # Imports
+import json
+import random
 import re
 from .dice import dice, ob_dice
 
@@ -33,16 +35,16 @@ def prettifyDice(rolls):
     return ', '.join(out)
 
 
-def splitRollString(roll: str, rollType: str, DEBUG):
+def splitRollString(roll: str, rollType: str, debug):
     # Validate pattern
-    if DEBUG == "True":
+    if debug == "True":
         print("\nRegex Debug")
     regex = r'[0-9]+(T|t|D|d)[0-9]+($|\+[0-9]+$)'
     if re.match(regex, roll):
-        if DEBUG == "True":
+        if debug == "True":
             print("Regex matched")
     else:
-        if DEBUG == "True":
+        if debug == "True":
             print("Regex NOT matched")
         return
     # Pattern to split: "[(T|t|D|d)+$]\s*"
@@ -57,12 +59,12 @@ def splitRollString(roll: str, rollType: str, DEBUG):
     elif len(RollSplit) == 3:
         bonus = RollSplit[2]
     else:
-        if DEBUG == "True":
+        if debug == "True":
             print("\nlen RollSplit Debug")
             print("len of RollSplit should only be 2 or 3")
             print("Len: ", len(RollSplit))
     # Validate content
-    if DEBUG == "True":
+    if debug == "True":
         print("\nRollSplit Debug")
         print(f"Rolls : {number_of_rolls}")
         print(f"Sides : {sides_to_die}")
@@ -70,16 +72,26 @@ def splitRollString(roll: str, rollType: str, DEBUG):
     return number_of_rolls, sides_to_die, bonus
 
 
+def getActivity(filepath: str):
+    with open(filepath) as json_file:
+        data = json.load(json_file)
+        # Get random element
+        random_element = random.choice(list(data.keys()))
+        # Get random child from randomized element
+        random_child = random.choice(list(data[random_element]['activities']))
+    return random_element, random_child
+
+
 # Command functions
 # Regular scalable dice
-def rollDice(roll: str, DEBUG):
+def rollDice(roll: str, debug):
     rollType = "roll"
     try:
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
             roll,
             rollType,
-            DEBUG
+            debug
             )
         # Roll the dice
         sum_rolls, raw_rolls, total = dice(
@@ -110,14 +122,14 @@ def rollDice(roll: str, DEBUG):
 
 
 # Infinite Dice (ob dice)
-def rollInfiniteDice(ob_roll: str, DEBUG):
+def rollInfiniteDice(ob_roll: str, debug):
     rollType = "ob"
     try:
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
             ob_roll,
             rollType,
-            DEBUG
+            debug
             )
         # Roll the dice
         sum_rolls, ob_rolls, raw_rolls, sixes, total = ob_dice(
@@ -158,7 +170,7 @@ def rollInfiniteDice(ob_roll: str, DEBUG):
         return 1
 
     # Debug some roll info for bad roll algorithm.
-    if DEBUG == "True":
+    if debug == "True":
         print("\nBad Roll Debug")
         print(sum_rolls)
         print(int(number_of_rolls))
@@ -174,14 +186,14 @@ def rollInfiniteDice(ob_roll: str, DEBUG):
 
 
 # Fight, rolls a bunch of things you need for a fight in eon.
-def rollForFight(ob_roll: str, DEBUG):
+def rollForFight(ob_roll: str, debug):
     rollType = "ob"
     try:
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
             ob_roll,
             rollType,
-            DEBUG
+            debug
             )
 
         # Roll the ob/infinite dice

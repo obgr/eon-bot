@@ -1,0 +1,23 @@
+{
+    "playing": {
+        "activities": [
+            "with cosmic demons",
+            "with fire",
+            "in the tavern",
+            "with GMs patience"
+        ]
+    },
+    "listening": {
+        "activities": [
+            "the screams of the GM",
+            "the sound of panic",
+            "crickets"
+        ]
+    },
+    "watching": {
+        "activities": [
+            "the annialation of Rampor",
+            "bad dice rolls"
+        ]
+    }
+}

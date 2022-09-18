@@ -57,11 +57,11 @@ sudo apt update \
 
 ## Virtual Environment
 ```
-mkdir venv
-python3 -m venv venv
-source venv/bin/activate
-pip3 install -r requirements.txt
-python3 -m pip install -U py-cord --pre
+mkdir venv \
+  && python3.10 -m venv venv \
+  && source venv/bin/activate \
+  && pip3 install -r requirements.txt \
+  && python3 -m pip install -U py-cord --pre
 ```
 
 # CONFIGURATION!
