@@ -10,7 +10,7 @@ import random
 # Function for simple scalable die
 def dice(number_of_rolls, bonus, sides_to_die):
     list_of_raw_rolls = []
-    sum = 0
+    sum_rolls = 0
     total = 0
     if int(number_of_rolls) < 1:
         # Lowest number of rolls we handle is 1
@@ -30,11 +30,11 @@ def dice(number_of_rolls, bonus, sides_to_die):
 
     # Sum dice rolls
     for i in list_of_raw_rolls:
-        sum += int(i)
+        sum_rolls += int(i)
 
     # Total
-    total = int(sum) + int(bonus)
-    return sum, list_of_raw_rolls, total
+    total = int(sum_rolls) + int(bonus)
+    return sum_rolls, list_of_raw_rolls, total
 
 
 # Function for ob dice
@@ -42,7 +42,7 @@ def ob_dice(number_of_rolls, bonus):
     list_of_ob_rolls = []
     list_of_sixes = []
     list_of_raw_rolls = []
-    sum = 0
+    sum_rolls = 0
     sixes = 0
     total = 0
 
@@ -67,11 +67,11 @@ def ob_dice(number_of_rolls, bonus):
 
     # Sum dice rolls
     for i in list_of_ob_rolls:
-        sum += int(i)
+        sum_rolls += int(i)
 
     # count sixes
     sixes = len(list_of_sixes)
 
     # Total
-    total = int(sum) + int(bonus)
-    return sum, list_of_ob_rolls, list_of_raw_rolls, sixes, total
+    total = int(sum_rolls) + int(bonus)
+    return sum_rolls, list_of_ob_rolls, list_of_raw_rolls, sixes, total

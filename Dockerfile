@@ -14,21 +14,21 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy App
-COPY src/ app/src/
+COPY app/ /eon-bot/app/
 # Copy requirements.txt
-COPY requirements.txt app/requirements.txt
+COPY requirements.txt /eon-bot/requirements.txt
 
-WORKDIR /app
+WORKDIR /eon-bot
 
 # Create virtual environment
-RUN mkdir /app/venv \
-    && python3 -m venv /app/venv \
-    && . /app/venv/bin/activate \
+RUN mkdir /eon-bot/venv \
+    && python3 -m venv /eon-bot/venv \
+    && . /eon-bot/venv/bin/activate \
     && pip3 install -r requirements.txt \
     && python3 -m pip install -U py-cord --pre
     # We need a later package of py-cord therefor additional pip install command
 
-COPY docker/entrypoint.sh /app/
-RUN chmod +x /app/entrypoint.sh
-ENTRYPOINT ["/app/entrypoint.sh"]
+COPY docker/entrypoint.sh /eon-bot/
+RUN chmod +x /eon-bot/entrypoint.sh
+ENTRYPOINT ["/eon-bot/entrypoint.sh"]
 CMD [""]

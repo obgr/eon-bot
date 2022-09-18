@@ -21,7 +21,7 @@ start_bot() {
 # Variables
 #REPO="obgr/eon-bot"
 #TAG=$(get_latest_release ${REPO})
-FILE=src/main.py
+FILE=app/main.py
 
 
 if [ -f $FILE ]; then

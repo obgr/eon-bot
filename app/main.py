@@ -1,4 +1,5 @@
 #!/bin/python3
+
 # Links
 # https://docs.pycord.dev/en/master/api.html
 # https://guide.pycord.dev/interactions/application-commands/slash-commands/
@@ -9,7 +10,7 @@ import discord
 from dotenv import load_dotenv
 
 # Local Imports
-from modules.commands import rollDice, rollInfiniteDice, rollForFight
+from modules.functions import rollDice, rollInfiniteDice, rollForFight
 
 # Variables from .env
 load_dotenv()
@@ -109,6 +110,7 @@ async def fight(ctx, ob_roll: discord.Option(str)):
 # Events
 @bot.event
 async def on_ready():
+    await bot.change_presence(activity=discord.Game(name="Eon"))
     print(f"Logged in as {bot.user}")
     print(f"Latency is {bot.latency}")
     print(f"Debug is {DEBUG}")
