@@ -10,14 +10,16 @@ import discord
 from dotenv import load_dotenv
 
 # Local Imports
-from modules.functions import rollDice, rollInfiniteDice, rollForFight, getActivity  # noqa: E501
+from modules.functions import rollDice, rollInfiniteDice, rollForFight, getActivity, lookupFunc  # noqa: E501
 
 # Variables from .env
 load_dotenv()
 token = os.getenv('discord_token')
-activities_json_file = os.getenv('activities_json_file')
 debug = os.getenv('debug')
 debug_guilds = os.getenv('debug_guilds')
+# Data
+activities_json_file = os.getenv('activities_json_file')
+data_file = os.getenv('data_file')
 
 if debug_guilds is None:
     bot = discord.Bot()
@@ -58,7 +60,7 @@ async def cs(ctx):
     else:
         print("Unsupported activity type")
     await ctx.respond(
-        f"{activity_type} {activity}, give me some time to update."
+        f"{activity_type} {activity}, give me some time to update my status."
         )
 
 
@@ -130,12 +132,28 @@ async def ob(ctx, ob_roll: discord.Option(str)):
 
 @bot.command(
     description="""
-    Roll for Fight, rolls ob + t100 for hit.
-Example: /fight 2t6+2
+    Fight assistant, rolls ob + t100 for hit.
+Example: /fight 5t6+2
 """
     )
 async def fight(ctx, ob_roll: discord.Option(str)):
     results = rollForFight(ob_roll, debug)
+    await ctx.respond(results)
+
+
+@bot.command(
+    description="""
+    Lookup values in the hit tables.
+"""
+    )
+async def lookup(
+    ctx,
+    debug,
+    weapon_type: discord.Option(str),
+    code_type: discord.Option(str),
+    value: discord.Option(int)
+):
+    results = lookupFunc(data_file, weapon_type, code_type, value)
     await ctx.respond(results)
 
 

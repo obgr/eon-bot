@@ -4,6 +4,7 @@
 import json
 import random
 import re
+import sqlite3
 from .dice import dice, ob_dice
 
 # Result vars for discord printout
@@ -80,6 +81,14 @@ def getActivity(filepath: str):
         # Get random child from randomized element
         random_child = random.choice(list(data[random_element]['activities']))
     return random_element, random_child
+
+
+def sqlite_lookup(sqlite3_file: str, lookup: str, table: str, id: int):
+    con = sqlite3.connect(sqlite3_file)
+    cur = con.cursor()
+    res = cur.execute(f"SELECT {lookup} FROM {table} WHERE ID IS '{id}'")
+    result = res.fetchone()
+    return result
 
 
 # Command functions
@@ -231,3 +240,86 @@ def rollForFight(ob_roll: str, debug):
         print(e)
         return 1
     return results
+
+
+# Lookup tables
+def lookupFunc(debug: str, sqlite3_file: str, weapon_type: str, code: str, t100: int):
+    # regexp for code
+    # regex = r'[0-9]+(T|t|D|d)[0-9]+($|\+[0-9]+$)'
+    # if re.match(regex, roll):
+    #    if debug == "True":
+
+    re_n = r'^(n+$|normal)+$'
+    re_h = r'^(h+$|high)+$'
+    re_l = r'^(l+$|low)+$'
+
+    # regexp for weapon_type
+    re_s = r'^(s+$|slash)+$'
+    re_b = r'^(b+$|blunt)+$'
+    re_r = r'^(r+$|range)+$'
+    re_p = r'^(p+$|pierce)+$'
+
+    # Lookup related vars
+    lookup_table = "lookup_hit_table"
+    lookup = "AREA, TARGET"
+
+    # IF code
+    if re.match(re_n, code, re.IGNORECASE):
+        if debug == "True":
+            print("matched normal")
+        code = "CODE_NORMAL"
+    elif re.match(re_h, code, re.IGNORECASE):
+        if debug == "True":
+            print("matched high")
+        code = "CODE_HIGH"
+    elif re.match(re_l, code, re.IGNORECASE):
+        if debug == "True":
+            print("matched low")
+        code = "CODE_LOW"
+    elif code is None:
+        if debug == "True":
+            print("code is None, defaulting to normal")
+        code = "CODE_NORMAL"
+    # define code to lookup
+    else:
+        print("code not matched")
+        print(code)
+        return 1
+
+    # if weapon_type
+    if re.match(re_s, weapon_type, re.IGNORECASE):
+        if debug == "True":
+            print("matched slash")
+        hit_table = "hit_table_slash"
+    elif re.match(re_b, weapon_type, re.IGNORECASE):
+        if debug == "True":
+            print("matched bluint")
+        hit_table = "hit_table_blunt"
+    elif re.match(re_r, weapon_type, re.IGNORECASE):
+        if debug == "True":
+            print("matched range")
+        hit_table = "hit_table_range"
+    elif re.match(re_p, weapon_type, re.IGNORECASE):
+        if debug == "True":
+            print("matched pierce")
+        hit_table = "hit_table_pierce"
+    elif weapon_type is None:
+        if debug == "True":
+            print("weapon_type is None, defaulting to slash")
+        hit_table = "hit_table_slash"
+    # define code to lookup
+    else:
+        print("weapon_type not matched")
+        print(weapon_type)
+        return 1
+
+    hit_table_out = sqlite_lookup(
+        sqlite3_file, code, hit_table, t100
+        )
+    hit_table_lookup = sqlite_lookup(
+        sqlite3_file, lookup, lookup_table, hit_table_out[0]
+        )
+    print(hit_table_out[0])
+    for i in hit_table_lookup:
+        print(i)
+    return hit_table_lookup
