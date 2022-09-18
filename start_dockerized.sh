@@ -1,7 +1,7 @@
 #!/bin/bash
 # Vars
 CONTAINERNAME="eon-bot"
-IMAGEVER="1.2.0"
+IMAGEVER="1.3.0"
 
 # Build Image
 docker build . -t ${CONTAINERNAME}:${IMAGEVER}
@@ -9,5 +9,4 @@ docker build . -t ${CONTAINERNAME}:${IMAGEVER}
 docker run -d \
  --mount type=bind,source=$PWD/src/.env,target=/app/src/.env,readonly \
  --restart unless-stopped \
- --name ${CONTAINERNAME} \
  ${CONTAINERNAME}:${IMAGEVER}

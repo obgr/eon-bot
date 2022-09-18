@@ -6,6 +6,14 @@ Rolls regular dice as well as whats known as an ob die (d6/t6) or infinite die (
 
 Written for python 3.10
 
+# Licencing and acknowledgements
+The project is published under the [MIT Licence](LICENSE.md).
+
+The data bundled in [src/data/helmgast/](src/data/helmgast/) is created and owned by Helmgast AB.</br>
+Permission has been granted by representatives of Helmgast AB to extract the hit table & damage table data from the books and bundle them in this project.
+
+# Usage
+
 ## Requirements
 You can run manually or in a container.
 ### Requirements for Running dockerized
@@ -84,13 +92,13 @@ chmod +x start_dockerized.sh
 
 ```
 # Build
-docker build . -t eon-bot:1.2.0
+docker build . -t eon-bot:1.3.0
 # Run
 docker run -d \
  --mount type=bind,source=$PWD/src/.env,target=/app/src/.env,readonly \
  --restart unless-stopped \
  --name eon-bot \
- eon-bot:1.2.0
+ eon-bot:1.3.0
 
 ```
 
@@ -109,6 +117,9 @@ Example
 /roll 1d100
 /roll 2T20+2
 /roll 3d6+3
+
+Output example:
+
 ```
 
 ### /ob
@@ -127,6 +138,8 @@ Example
 
 # This example will still use a six sided die.
 /ob 4t8 
+
+Output example:
 
 ```
 
@@ -151,3 +164,4 @@ This bot is limited by the size of discord messages as well as sizes of some dat
 This is a known bug.
 
 Accidentally summoning a cosmic horror monster on the outskirts of a semi-large town is not always appreciated by the game master.
+
