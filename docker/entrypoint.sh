@@ -2,7 +2,7 @@
 
 # Functions
 source_venv() {
-   . /app/venv/bin/activate
+   . /eon-bot/venv/bin/activate
 }
 #get_latest_release() {
 #   curl --silent "https://api.github.com/repos/$1/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")' # Consult github api and grep/sed out result
