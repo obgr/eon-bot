@@ -2,17 +2,6 @@
 FROM alpine:3.16
 
 # Upgrade and install 
-# RUN apt-get update \
-#     && apt-get upgrade -y \
-#     && apt-get -y install \
-#                 python3 \
-#                 python3-venv \
-#                 python3-pip \
-#     && apt-get autoremove \
-#     && apt-get autoclean \
-#     && apt-get clean \
-#     && rm -rf /var/lib/apt/lists/*
-
 RUN apk -U upgrade \
     && apk add --no-cache \
                 python3 \
