@@ -65,7 +65,7 @@ mkdir venv \
 ```
 
 # CONFIGURATION!
-write a .env file based from app/.env.example
+Create a ```app/.env``` file based on ```app/.env.example```
 generate an api token from [discord's developer portal](https://discord.com/developers/).
 Join bot to your discord server from the developer portal.
 
