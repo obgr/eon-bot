@@ -14,7 +14,6 @@ source_venv() {
 #}
 start_bot() {
    # Start Bot
-   pwd
    echo "Starting $FILE."
    python3 -u $FILE
 }
@@ -24,7 +23,7 @@ start_bot() {
 #TAG=$(get_latest_release ${REPO})
 FILE=app/main.py
 
-
+pwd
 if [ -f $FILE ]; then
    echo "File $FILE exists."
    source_venv
