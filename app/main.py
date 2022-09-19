@@ -152,6 +152,8 @@ async def lookup(
     aim: discord.Option(str),
     t100: discord.Option(int)
 ):
+    weapon_type = weapon_type.lower()
+    aim = aim.lower()
     out = lookupFunc(data_file, weapon_type, aim, t100, debug)
     results = f"""
 Command : /lookup weapon_type: {weapon_type} aim: {aim}, t100: {t100}
