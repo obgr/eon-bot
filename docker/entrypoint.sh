@@ -13,7 +13,8 @@ source_venv() {
 #   wget -q https://github.com/${REPO}/releases/download/${TAG}/${FILE}
 #}
 start_bot() {
-   # Start JMusicBot
+   # Start Bot
+   pwd
    echo "Starting $FILE."
    python3 -u $FILE
 }

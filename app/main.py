@@ -154,7 +154,7 @@ async def lookup(
 ):
     out = lookupFunc(data_file, weapon_type, aim, t100, debug)
     results = f"""
-Command : /lookup weapon_type:{weapon_type} aim:{aim}, t100:{t100}
+Command : /lookup weapon_type: {weapon_type} aim: {aim}, t100: {t100}
 Target        : {out[0]}, {out[1]}
 """
     await ctx.respond(results)
