@@ -199,5 +199,5 @@ This bot is limited by the size of discord messages as well as sizes of some dat
 
 This is a known bug.
 
-Accidentally summoning a cosmic horror monster on the outskirts of a semi-large town is not always appreciated by the game master.
+Accidentally summoning a cosmic horror monster on the outskirts of a semi-large town is not always appreciated by the dungeon master.
 
