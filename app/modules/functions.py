@@ -218,7 +218,7 @@ def rollForFight(ob_roll: str, debug):
         else:
             results = results + "\n"
         results = results + f"OB Total ........: {ob_total}\n"
-        results = results + f"D100 Total ....: {d100_total}\n"
+        results = results + f"D100 ..............: {d100_total}\n"
     except Exception as e:
         print(e)
         return 1

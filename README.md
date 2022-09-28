@@ -161,15 +161,21 @@ Total............ : 20
 
 ### /fight - Fight assistant
 Will roll ob +t100 dice for use in a fight.
-User runs ```/fight <diceroll of weapon>```
+User runs ```/fight <diceroll of weapon> <weapon_type> <aim> ```
 
 Example:
 ```
-/fight 2t6+2
+/fight 2t6+2 range
 
 Output example:
-OB Rolls.....: 2️⃣,5️⃣+ 2
-OB Total.....: 9
+OB Sixes ....: 1
+OB Rolls ....: 5️⃣,2️⃣,5️⃣+ 2
+OB Total ....: 14
+D100 Total : 94
+
+Aim: normal
+Weapon type: range
+Target: Höger ben, Vad
 d100 Total...: 35
 ```
 

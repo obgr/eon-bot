@@ -153,7 +153,7 @@ async def ob(
 
 @bot.slash_command(
     description="""
-    Fight assistant, rolls ob + t100 for hit.
+    Fight assistant, rolls ob + t100 for target.
 Example: /fight 5t6+2
 """
 )
