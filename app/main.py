@@ -67,13 +67,11 @@ async def cs(ctx):
 
 @bot.slash_command(description="About Bot")
 async def about(ctx):
-    message = """
-    Hi, My name is {BOT}.
+    message = f"""
+    Hi, My name is {bot.user}.
 You can find my source code below.
 Eon-Bot - https://github.com/obgr/eon-bot
-""".format(
-        BOT=bot.user
-    )
+"""
     await ctx.respond(message)
 
 
@@ -87,9 +85,7 @@ async def dm(ctx):
     Hello,
 You may send slash commands directly to me in this private chat.
 """
-    reply = "You got a DM {AUTHOR}".format(
-        AUTHOR=ctx.author
-    )
+    reply = f"You got a DM {ctx.author}"
     try:
         await ctx.author.send(message)
         if debug == "True":
@@ -109,8 +105,7 @@ Example: /roll 1d100
 @option(
     "roll",
     description="Example: 1d100 or 4d6",
-    required=True,
-    default='1d100'
+    required=True
 )
 async def roll(
     ctx,
@@ -128,11 +123,10 @@ D6 only. Example: /ob 3d6+3
 @option(
     "inf_roll",
     description="Example: 2d6+2",
-    required=True,
-    default='2d6'
+    required=True
 )
 async def inf(
-    ctx,
+    ctx: discord.ApplicationContext,
     inf_roll: str
 ):
     results = rollInfiniteDice(inf_roll, debug)
@@ -147,8 +141,7 @@ T6 only. Example: /ob 3d6+3
 @option(
     "ob_roll",
     description="Example: 2t6+2",
-    required=True,
-    default='2t6'
+    required=True
 )
 async def ob(
     ctx,
@@ -167,14 +160,12 @@ Example: /fight 5t6+2
 @option(
     "ob_roll",
     description="Example: 2t6+2",
-    required=True,
-    default='2t6'
+    required=True
 )
 @option(
     "weapon_type",
     description="slash/blunt/pierce/range",
-    required=True,
-    default='slash'
+    required=True
 )
 @option(
     "aim",
@@ -185,9 +176,19 @@ Example: /fight 5t6+2
 async def fight(
     ctx,
     ob_roll: str,
+    weapon_type: str,
     aim: str
 ):
-    results = rollForFight(ob_roll, debug)
+    weapon_type = weapon_type.lower()
+    aim = aim.lower()
+    roll_out, d100 = rollForFight(ob_roll, debug)
+    lookup_out = lookupFunc(data_file, weapon_type, aim, d100, debug)
+    results = f"""
+    {roll_out}
+Aim: {aim}
+Weapon type: {weapon_type}
+Target: {lookup_out[0]}, {lookup_out[1]}
+"""
     await ctx.respond(results)
 
 
@@ -199,20 +200,17 @@ async def fight(
 @option(
     "weapon_type",
     description="slash/blunt/pierce/range",
-    required=True,
-    default='slash'
+    required=True
 )
 @option(
     "aim",
     description="normal, high or low",
-    required=True,
-    default='normal'
+    required=True
 )
 @option(
     "d100",
     description="Example: 42",
-    required=True,
-    default='42'
+    required=True
 )
 async def lookup(
     ctx,

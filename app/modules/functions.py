@@ -9,9 +9,9 @@ from .dice import dice, ob_dice
 
 # Result vars for discord printout
 string_rolled = "Rolled :"
-string_total = "Total............ :"
-string_rolls = "Rolls............ :"
-string_sixes = "No. Sixes.... :"
+string_total = "Total ............:"
+string_rolls = "Rolls ............:"
+string_sixes = "No. Sixes ....:"
 
 
 # Functions
@@ -111,19 +111,16 @@ def rollDice(roll: str, debug):
 
         # Make Pretty
         semiPrettyRolls = ', '.join(raw_rolls)
+        roll = roll.upper()
 
         # Build result string
-        results = string_rolled + " {ROLL}\n".format(
-            ROLL=roll.upper()
-        )
-        results = results + string_rolls + " {ROLLS}".format(
-            ROLLS=semiPrettyRolls
-        )
+        results = f"{string_rolled} {roll}\n"
+        results = results + f"{string_rolls} {semiPrettyRolls}"
         if int(bonus) != 0:
-            results = results + "+ {BONUS}\n".format(BONUS=bonus)
+            results = results + f"+ {bonus}\n"
         else:
             results = results + "\n"
-        results = results + string_total + " {TOTAL}".format(TOTAL=total)
+        results = results + f"{string_total} {total}"
     except Exception as e:
         print(e)
         return 1
@@ -147,29 +144,19 @@ def rollInfiniteDice(ob_roll: str, debug):
         )
         # Make Pretty
         pretty_rolls = prettifyDice(ob_rolls)
+        ob_roll = ob_roll.upper()
 
         # Build result string
-        results = string_rolled + " {ROLL}\n".format(
-            ROLL=ob_roll.upper()
-        )
+        results = f"{string_rolled} {ob_roll}\n"
 
         if sixes != 0:
-            results = results + string_sixes + " {SIXES}\n".format(
-                SIXES=sixes
-            )
-        results = results + string_rolls + " {ROLLS}".format(
-            ROLLS=pretty_rolls
-        )
+            results = results + f"{string_sixes} {sixes}\n"
+        results = results + f"{string_rolls} {pretty_rolls}"
         if int(bonus) != 0:
-            results = results + "+ {BONUS}\n".format(
-                BONUS=bonus
-            )
+            results = results + f"+ {bonus}\n"
         else:
             results = results + "\n"
-
-        results = results + string_total + " {TOTAL}".format(
-            TOTAL=total
-        )
+        results = results + f"{string_total} {total}"
     except Exception as e:
         print(e)
         print("\nBad Roll Debug")
@@ -221,25 +208,21 @@ def rollForFight(ob_roll: str, debug):
 
         # Make Pretty
         pretty_rolls = prettifyDice(ob_rolls)
-        # semiPrettyRolls = ', '.join(d100_raw_rolls)
 
-        # Build result string
-        # results = string_rolled + " {ROLL}\n".format(
-        #    ROLL=roll.upper()
-        #    )
-        results = "OB Rolls.....: {ROLLS}".format(
-            ROLLS=pretty_rolls
-        )
+        results = ""
+        if ob_sixes != 0:
+            results = results + f"OB No. Sixes :  {ob_sixes}\n"
+        results = results + f"OB Rolls ........: {pretty_rolls}"
         if int(bonus) != 0:
-            results = results + "+ {BONUS}\n".format(BONUS=bonus)
+            results = results + f"+ {bonus}\n"
         else:
             results = results + "\n"
-        results = results + "OB Total.....: {TOTAL}\n".format(TOTAL=ob_total)
-        results = results + "d100 Total : {TOTAL}\n".format(TOTAL=d100_total)
+        results = results + f"OB Total ........: {ob_total}\n"
+        results = results + f"D100 Total ....: {d100_total}\n"
     except Exception as e:
         print(e)
         return 1
-    return results
+    return results, d100_total
 
 
 # Lookup tables
@@ -247,7 +230,7 @@ def lookupFunc(
     sqlite3_file: str,
     weapon_type: str,
     target: str,
-    t100: int,
+    d100: int,
     debug: str
 ):
     # regexp for code
@@ -320,7 +303,7 @@ def lookupFunc(
         return 1
 
     hit_table_out = sqlite_lookup(
-        sqlite3_file, target, hit_table, t100
+        sqlite3_file, target, hit_table, d100
     )
     hit_table_lookup = sqlite_lookup(
         sqlite3_file, lookup, lookup_table, hit_table_out[0]
