@@ -1,19 +1,22 @@
-#!/bin/bash
+#!/bin/sh
 
 # Functions
 source_venv() {
-   . /app/venv/bin/activate
+   . /eon-bot/venv/bin/activate
 }
+
 #get_latest_release() {
 #   curl --silent "https://api.github.com/repos/$1/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")' # Consult github api and grep/sed out result
 #}
+
 #download_latest_release() {
 #   # Download release
 #   echo "Downloading $FILE from github."
 #   wget -q https://github.com/${REPO}/releases/download/${TAG}/${FILE}
 #}
+
 start_bot() {
-   # Start JMusicBot
+   # Start Bot
    echo "Starting $FILE."
    python3 -u $FILE
 }
@@ -21,9 +24,9 @@ start_bot() {
 # Variables
 #REPO="obgr/eon-bot"
 #TAG=$(get_latest_release ${REPO})
-FILE=src/main.py
+FILE=app/main.py
 
-
+pwd
 if [ -f $FILE ]; then
    echo "File $FILE exists."
    source_venv

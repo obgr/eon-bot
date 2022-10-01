@@ -1,4 +1,7 @@
 {
     "cornflakes.linter.executablePath": "venv/bin/flake8",
-    "cornflakes.linter.run": "onType"
+    "cornflakes.linter.run": "onType",
+    "python.analysis.extraPaths": [
+        "./app"
+    ]
 }
