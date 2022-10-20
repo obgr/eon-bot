@@ -1,12 +1,13 @@
 # Run this docker file from the parent directory, see README.md
-FROM alpine:3.16
+FROM python:slim-buster
 
-# Upgrade and install 
-RUN apk -U upgrade \
-    && apk add --no-cache \
-                python3 \
-                py3-pip \
-                py3-virtualenv
+# Upgrade container.
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get autoremove \
+    && apt-get autoclean \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy App
 COPY app/ /eon-bot/app/
