@@ -5,6 +5,7 @@
 # https://guide.pycord.dev/interactions/application-commands/slash-commands/
 
 # Imports
+from cProfile import label
 import os
 import discord
 from discord.commands import option
@@ -226,6 +227,57 @@ Command : /lookup weapon_type: {weapon_type} aim: {aim}, t100: {d100}
 Target        : {out[0]}, {out[1]}
 """
     await ctx.respond(results)
+
+
+# https://guide.pycord.dev/interactions/ui-components/buttons 
+# buttons
+
+class ButtonView(discord.ui.View):
+    @discord.ui.button(label="1d10", row=0, style=discord.ButtonStyle.grey, emoji="🎲")
+    async def roll_1d10_button_callback(self, button, interaction):
+        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+
+    @discord.ui.button(label="1d100", row=0, style=discord.ButtonStyle.grey, emoji="🎲")
+    async def roll_1d100_button_callback(self, button, interaction):
+        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+
+
+    @discord.ui.button(label="ob 1d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
+    async def ob_1d6_button_callback(self, button, interaction):
+        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+
+    @discord.ui.button(label="ob 2d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
+    async def ob_2d6_button_callback(self, button, interaction):
+        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+
+    @discord.ui.button(label="ob 3d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
+    async def ob_3d6_button_callback(self, button, interaction):
+        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+
+    @discord.ui.button(label="ob 4d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
+    async def ob_4d6_button_callback(self, button, interaction):
+        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+
+    @discord.ui.button(label="ob 5d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
+    async def ob_5d6_button_callback(self, button, interaction):
+        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+
+    @discord.ui.button(label="ob 6d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
+    async def ob_6d6_button_callback(self, button, interaction):
+        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+    
+    @discord.ui.button(label="ob 7d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
+    async def ob_7d6_button_callback(self, button, interaction):
+        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+
+    @discord.ui.button(label="ob 8d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
+    async def ob_8d6_button_callback(self, button, interaction):
+        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+
+@bot.slash_command(description="Roll preset dice using buttons")
+async def button(ctx):
+    await ctx.respond("Press the dice you want to roll", view=ButtonView())
+
 
 
 # Events
