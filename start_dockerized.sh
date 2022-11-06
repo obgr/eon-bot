@@ -32,7 +32,7 @@ if command -v podman &> /dev/null
 then
     echo "podman found"
     CONTAINERRUNTIME="podman"
-elif command -v podman &> /dev/null
+elif command -v docker &> /dev/null
 then
     echo "docker found"
     CONTAINERRUNTIME="docker"
