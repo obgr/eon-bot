@@ -1,4 +1,4 @@
 flake8
 autopep8
 python-dotenv
-py-cord --pre
+py-cord
