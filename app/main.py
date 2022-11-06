@@ -236,52 +236,118 @@ Target        : {out[0]}, {out[1]}
 class ButtonView(discord.ui.View):
     @discord.ui.button(label="1d10", row=0, style=discord.ButtonStyle.grey, emoji="🎲")
     async def roll_1d10_button_callback(self, button, interaction):
-        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+        roll = "1d10"
+        results = rollDice(roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
 
     @discord.ui.button(label="1d100", row=0, style=discord.ButtonStyle.grey, emoji="🎲")
     async def roll_1d100_button_callback(self, button, interaction):
-        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+        roll = "1d100"
+        results = rollDice(roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
 
     @discord.ui.button(label="ob 1d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
     async def ob_1d6_button_callback(self, button, interaction):
-        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+        ob_roll = "1d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
 
     @discord.ui.button(label="ob 2d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
     async def ob_2d6_button_callback(self, button, interaction):
-        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+        ob_roll = "2d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
 
     @discord.ui.button(label="ob 3d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
     async def ob_3d6_button_callback(self, button, interaction):
-        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+        ob_roll = "3d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
 
     @discord.ui.button(label="ob 4d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
     async def ob_4d6_button_callback(self, button, interaction):
-        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+        ob_roll = "4d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
 
     @discord.ui.button(label="ob 5d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
     async def ob_5d6_button_callback(self, button, interaction):
-        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+        ob_roll = "5d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
 
     @discord.ui.button(label="ob 6d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
     async def ob_6d6_button_callback(self, button, interaction):
-        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+        ob_roll = "6d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
 
     @discord.ui.button(label="ob 7d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
     async def ob_7d6_button_callback(self, button, interaction):
-        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+        ob_roll = "7d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
 
     @discord.ui.button(label="ob 8d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
     async def ob_8d6_button_callback(self, button, interaction):
-        await interaction.response.send_message(f"{interaction.user} pressed {button.label}")
+        ob_roll = "8d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
 
 
 @bot.slash_command(description="Roll preset dice using buttons")
 async def button(ctx):
     await ctx.respond("Press the dice you want to roll", view=ButtonView())
 
+
 # Modal
 # wants Message Content intent https://guide.pycord.dev/popular-topics/intents
 # https://guide.pycord.dev/interactions/ui-components/modal-dialogs
+class MyModal(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.add_item(discord.ui.InputText(label="Short Input"))
+        self.add_item(discord.ui.InputText(label="Long Input", style=discord.InputTextStyle.long))
+        self.add_item(weaponTypeDropdown(self.bot))
+
+    async def callback(self, interaction: discord.Interaction):
+        embed = discord.Embed(title="Modal Results")
+        embed.add_field(name="Short Input", value=self.children[0].value)
+        embed.add_field(name="Long Input", value=self.children[1].value)
+        await interaction.response.send_message(embeds=[embed])
+
+
+class ModalView(discord.ui.View):
+    @discord.ui.button(label="Send Modal")
+    async def button_callback(self, button, interaction):
+        await interaction.response.send_modal(MyModal(title="Modal via Button"))
+
+
+@bot.slash_command()
+async def send_modal(ctx):
+    await ctx.respond(view=ModalView())
 
 
 # Dropdown Fight
@@ -375,7 +441,7 @@ class ifightView(discord.ui.View):
     async def on_timeout(self):
         # remove dropdown from message on timeout
         self.clear_items()
-        #await self._help_command.response.edit(view=self)
+        # await self._help_command.response.edit(view=self)
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return self._help_command.context.author == interaction.user
