@@ -1,8 +1,10 @@
 # Run this docker file from the parent directory, see README.md
-FROM python:slim-buster
+FROM python:3.10-slim-bullseye
 
 # Upgrade container.
 RUN apt-get update \
+    && apt-get install -y \
+        gcc \
     && apt-get upgrade -y \
     && apt-get autoremove \
     && apt-get autoclean \
