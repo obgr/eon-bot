@@ -242,7 +242,6 @@ class ButtonView(discord.ui.View):
             f"{interaction.user} {results}"
         )
 
-
     @discord.ui.button(label="1d100", row=0, style=discord.ButtonStyle.grey, emoji="🎲")
     async def roll_1d100_button_callback(self, button, interaction):
         roll = "1d100"
@@ -317,7 +316,7 @@ class ButtonView(discord.ui.View):
 
 
 @bot.slash_command(description="Roll preset dice using buttons")
-async def button(ctx):
+async def ir(ctx):
     await ctx.respond("Press the dice you want to roll", view=ButtonView())
 
 
@@ -456,6 +455,47 @@ async def ifight(ctx: discord.ApplicationContext):
 
     # Sending a message containing our View
     await ctx.respond("Pick your favourite colour:", view=view)
+
+
+# Queued rolls
+class QueuedRollsModal(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.add_item(discord.ui.InputText(label="Type of Dice"))
+        self.add_item(discord.ui.InputText(label="List of Rolls", style=discord.InputTextStyle.long))
+
+    async def callback(self, interaction: discord.Interaction):
+        # embed = discord.Embed(title="Modal Results")
+        # embed.add_field(name="Short Input", value=self.children[0].value)
+        # embed.add_field(name="Long Input", value=self.children[1].value)
+        rollType = self.children[0].value
+        listRolls = self.children[1].value.split(",")
+        print(rollType)
+        print(listRolls)
+
+        results = ""
+        if rollType.lower() == "ob" or rollType.lower() == "inf":
+            # Roll infinite/ob dice
+            for i in listRolls:
+                results = results + rollInfiniteDice(i, debug) + "\n\n"
+        elif rollType.lower() == "normal" or rollType.lower() == "regular":
+            # roll a regular dice
+            for i in listRolls:
+                results = results + rollDice(i, debug)
+            print()
+        else:
+            results = f"Unknown rollType: {rollType}"
+
+        # await interaction.response.send_message(embeds=[embed])
+        await interaction.response.send_message(results)
+
+
+@bot.slash_command()
+async def qr(ctx: discord.ApplicationContext):
+    """Opens a modal dialog for Queued Rolls"""
+    modal = QueuedRollsModal(title="Queued Rolls")
+    await ctx.send_modal(modal)
 
 
 # Events
