@@ -5,15 +5,14 @@
 # https://guide.pycord.dev/interactions/application-commands/slash-commands/
 
 # Imports
-# from cProfile import label
 import os
 import discord
-from discord.ui import Select, View
 from discord.commands import option
 from dotenv import load_dotenv
 
 # Local Imports
 from modules.functions import rollDice, rollInfiniteDice, rollForFight, getActivity, lookupFunc  # noqa: E501
+from modules.dice import dice
 
 # Variables from .env
 load_dotenv()
@@ -231,8 +230,6 @@ Target        : {out[0]}, {out[1]}
 
 
 # https://guide.pycord.dev/interactions/ui-components/buttons
-# buttons - Classify this
-
 class ButtonView(discord.ui.View):
     @discord.ui.button(label="1d10", row=0, style=discord.ButtonStyle.grey, emoji="🎲")
     async def roll_1d10_button_callback(self, button, interaction):
@@ -317,54 +314,25 @@ class ButtonView(discord.ui.View):
 
 @bot.slash_command(description="Roll preset dice using buttons")
 async def ir(ctx):
-    await ctx.respond("Press the dice you want to roll", view=ButtonView())
-
-
-# Modal
-# wants Message Content intent https://guide.pycord.dev/popular-topics/intents
-# https://guide.pycord.dev/interactions/ui-components/modal-dialogs
-class MyModal(discord.ui.Modal):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
-        self.add_item(discord.ui.InputText(label="Short Input"))
-        self.add_item(discord.ui.InputText(label="Long Input", style=discord.InputTextStyle.long))
-        self.add_item(weaponTypeDropdown(self.bot))
-
-    async def callback(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="Modal Results")
-        embed.add_field(name="Short Input", value=self.children[0].value)
-        embed.add_field(name="Long Input", value=self.children[1].value)
-        await interaction.response.send_message(embeds=[embed])
-
-
-class ModalView(discord.ui.View):
-    @discord.ui.button(label="Send Modal")
-    async def button_callback(self, button, interaction):
-        await interaction.response.send_modal(MyModal(title="Modal via Button"))
-
-
-@bot.slash_command()
-async def send_modal(ctx):
-    await ctx.respond(view=ModalView())
+    await ctx.respond("Press the dice you want to roll, active for 5 minutes.", view=ButtonView(timeout=300))
 
 
 # Dropdown Fight
 # https://guide.pycord.dev/interactions/ui-components/dropdowns
 # https://github.com/DenverCoder1/tutorial-discord-bot/blob/select-menu-help/modules/help/help_command.py
 # https://github.com/Pycord-Development/pycord/tree/master/examples/views
+class interactiveFightView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+        await self.message.edit(content="You took too long! Disabled all the components.", view=self)
 
-
-# Defines a custom Select containing colour options
-# that the user can choose. The callback function
-# of this class is called when the user changes their choice.
-class aimDropdown(discord.ui.Select):
-    def __init__(self, bot_: discord.Bot):
-        # For example, you can use self.bot to retrieve a user or perform other functions in the callback.
-        # Alternatively you can use Interaction.client, so you don't need to pass the bot instance.
-        self.bot = bot_
-        # Set the options that will be presented inside the dropdown:
-        options = [
+    @discord.ui.select(
+        row=0,
+        placeholder="Where do you aim?",
+        min_values=1,
+        max_values=1,
+        options=[
             discord.SelectOption(
                 label="Normal", description="Think Different.", emoji="🔷"
             ),
@@ -375,30 +343,18 @@ class aimDropdown(discord.ui.Select):
                 label="Low", description="#Ydoran, Left foot is a great target!", emoji="🟢"
             ),
         ]
-        # The placeholder is what will be shown when no option is selected.
-        # The min and max values indicate we can only pick one of the three options.
-        # The options parameter, contents shown above, define the dropdown options.
-        super().__init__(
-            placeholder="Choose your favourite colour...",
-            min_values=1,
-            max_values=1,
-            options=options,
-        )
+    )
+    async def selectAim_callback(self, select, interaction):
+        # select.disabled = True  # set the status of the select as disabled
+        self.selectAim = select.values[0]
+        await interaction.response.edit_message(view=self)
 
-    async def callback(self, interaction: discord.Interaction):
-        # Use the interaction object to send a response message containing
-        # the user's favourite colour or choice. The self object refers to the
-        # Select object, and the values attribute gets a list of the user's
-        # selected options. We only want the first one.
-        await interaction.response.send_message(
-            f"Your favourite colour is {self.values[0]}"
-        )
-
-
-class weaponTypeDropdown(discord.ui.Select):
-    def __init__(self, bot_: discord.Bot):
-        self.bot = bot_
-        options = [  # Options
+    @discord.ui.select(
+        row=1,
+        placeholder="Choose weapon type",
+        min_values=1,
+        max_values=1,
+        options=[
             discord.SelectOption(
                 label="Slash", description="Regular slice!", emoji="⚔️"
             ),
@@ -412,49 +368,33 @@ class weaponTypeDropdown(discord.ui.Select):
                 label="Range", description="Spooky knife action at a distance?", emoji="🏹"
             )
         ]
-        super().__init__(
-            placeholder="Choose your favourite colour...",
-            min_values=1,
-            max_values=1,
-            options=options,
+    )
+    async def selectWeaponType_callback(self, select, interaction):
+        # select.disabled = True  # set the status of the select as disabled
+        self.selectWeaponType = select.values[0]
+        await interaction.response.edit_message(view=self)
+
+    @discord.ui.button(
+        row=2,
+        label="Submit",
+        style=discord.ButtonStyle.green,
+        emoji="☑"
+    )
+    async def button_callback(self, button, interaction):
+        # roll_out, d100 = rollForFight(ob_roll, debug)
+        _, _, d100 = dice(
+            int(1),
+            int(0),
+            int(100)
         )
-
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_message(
-            f"Your favourite colour is {self.values[0]}"
-        )
-
-
-# Defines a simple View that allows the user to use the Select menu.
-class ifightView(discord.ui.View):
-    def __init__(self, bot_: discord.Bot):
-        self.bot = bot_
-        super().__init__()
-
-        # Adds the dropdown to our View object
-        # self.add_item(weaponTypeDropdown(self.bot))
-        self.add_item(aimDropdown(self.bot))
-
-        # Initializing the view and adding the dropdown can actually be done in a one-liner if preferred:
-        # super().__init__(Dropdown(self.bot))
-    async def on_timeout(self):
-        # remove dropdown from message on timeout
-        self.clear_items()
-        # await self._help_command.response.edit(view=self)
-
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        return self._help_command.context.author == interaction.user
+        lookup_out = lookupFunc(data_file, self.selectWeaponType.lower(), self.selectAim.lower(), d100, debug)
+        results = f"Roll: {d100}\nTarget: {lookup_out[0]}, {lookup_out[1]}"
+        await interaction.response.send_message(results)
 
 
 @bot.slash_command(descriprion="Interactive Fight")
-async def ifight(ctx: discord.ApplicationContext):
-    """Sends a message with our dropdown that contains colour options."""
-
-    # Create the view containing our dropdown
-    view = ifightView(bot)
-
-    # Sending a message containing our View
-    await ctx.respond("Pick your favourite colour:", view=view)
+async def ifight(ctx):
+    await ctx.send("Make your selection", view=interactiveFightView(timeout=120))
 
 
 # Queued rolls
@@ -466,9 +406,6 @@ class QueuedRollsModal(discord.ui.Modal):
         self.add_item(discord.ui.InputText(label="List of Rolls", style=discord.InputTextStyle.long))
 
     async def callback(self, interaction: discord.Interaction):
-        # embed = discord.Embed(title="Modal Results")
-        # embed.add_field(name="Short Input", value=self.children[0].value)
-        # embed.add_field(name="Long Input", value=self.children[1].value)
         rollType = self.children[0].value
         listRolls = self.children[1].value.split(",")
         print(rollType)
@@ -479,7 +416,7 @@ class QueuedRollsModal(discord.ui.Modal):
             # Roll infinite/ob dice
             for i in listRolls:
                 results = results + rollInfiniteDice(i, debug) + "\n\n"
-        elif rollType.lower() == "normal" or rollType.lower() == "regular":
+        elif rollType.lower() == "normal" or rollType.lower() == "regular" or rollType.lower() == "roll":
             # roll a regular dice
             for i in listRolls:
                 results = results + rollDice(i, debug)
@@ -493,7 +430,7 @@ class QueuedRollsModal(discord.ui.Modal):
 
 @bot.slash_command()
 async def qr(ctx: discord.ApplicationContext):
-    """Opens a modal dialog for Queued Rolls"""
+    """Opens a modal for Queued Rolls (comma separated)"""
     modal = QueuedRollsModal(title="Queued Rolls")
     await ctx.send_modal(modal)
 

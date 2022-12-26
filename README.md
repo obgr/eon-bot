@@ -1,4 +1,5 @@
 # eon-bot
+
 <img src="images/logo.png" >
 
 Discord dice roller bot for Eon, a tabletop RPG by Helmgast.
@@ -6,19 +7,24 @@ Rolls regular dice as well as whats known as an ob die (d6/t6) or infinite die (
 
 Written for python 3.10
 
-# Licencing and acknowledgements
+## Licencing and acknowledgements
+
 The project is published under the [MIT Licence](LICENSE.md).
 
 The data bundled in [app/data/helmgast/](app/data/helmgast/) is created and owned by Helmgast AB.</br>
 Permission has been granted by representatives of Helmgast AB to extract the hit table & damage table data from the books and bundle them in this project.
 
-# Usage
+## Usage
 
-## Requirements
+### Requirements
+
 You can run manually or in a container.
-### Requirements for Running dockerized
+
+#### Requirements for Running dockerized
+
 Docker:
-```
+
+```bash
 # Install from repo or directly from docker.com
 # https://docs.docker.com/engine/install/ubuntu/
 sudo apt update \
@@ -27,8 +33,9 @@ sudo apt update \
 ```
 
 podman:
-podman also works, its an easy way to run in WSL due to systemd. https://podman.io/
-```
+podman also works, its an easy way to run in WSL due to systemd. [podman.io](https://podman.io/)
+
+```bash
 sudo apt update \
 && sudo apt install -y \
                 podman \
@@ -41,12 +48,14 @@ $ docker --version
 Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
 podman version 3.4.4
 ```
+
 For Autostarting podman containers generate a systemd init file with ```podman generate systemd```
 
-https://docs.podman.io/en/latest/markdown/podman-generate-systemd.1.html#examples
+[podman systemd examples](https://docs.podman.io/en/latest/markdown/podman-generate-systemd.1.html#examples)
 
-### Requirements for Running manually
-```
+#### Requirements for Running manually
+
+```bash
 sudo apt update \
 && sudo apt install -y \
                 python3 \
@@ -55,42 +64,45 @@ sudo apt update \
 
 ```
 
-## Virtual Environment
-```
+### Virtual Environment
+
+```bash
 mkdir venv \
   && python3.10 -m venv venv \
   && source venv/bin/activate \
-  && pip3 install -r requirements.txt \
-  && python3 -m pip install -U py-cord --pre
+  && pip3 install -r requirements.txt
 ```
 
-# CONFIGURATION!
+## CONFIGURATION
+
 Create a ```app/.env``` file based on ```app/.env.example```
 generate an api token from [discord's developer portal](https://discord.com/developers/).
 Join bot to your discord server from the developer portal.
 
-https://discord.com/developers/
+## Running the bot
 
-# RUN 
+### Run Manually
 
-## Run Manually
-```
+```bash
 cd ~/git/eon-bot
 source venv/bin/activate
 python3 app/main.py
 ```
 
-## Run Docker container
+### Run Docker container
+
 make sure you have docker prereqs.
-### Scripted build/startup
-```
+
+#### Scripted build/startup
+
+```bash
 chmod +x start_dockerized.sh
 ./start_dockerized.sh
 ```
 
-### Manual
+#### Building and Run Manually
 
-```
+```bash
 # Build
 docker build . -t eon-bot:1.4.0
 # Run
@@ -102,30 +114,38 @@ docker run -d \
 
 ```
 
-# Using the bot.
+## Using the bot
+
 Slash commands! You may use discord's slash commands in order to use the bot.
 
-## Syntax
-### /about - About
+### Syntax
+
+#### /about - About
+
 eon-bot will send a link to the Github page.
 
-### /cs - Change status
+#### /cs - Change status
+
 eon-bot will change it's status to a random preset.
 
-### /dm - Direct message
+#### /dm - Direct message
+
 eon-bot will send a direct message to the user.
 Useful for secret dice rolls or lookups.
 
-### /Ping - send Latency
+#### /Ping - send Latency
+
 eon-bot will send a message containing the ping of the bot.
 
-### /roll - Scalable dice
+#### /roll - Scalable dice
+
 Format has to be in NtN+N, NtN, NdN+N or NdN.
 
 Can also be written with capital letters: ie NT6+N
 
 Example
-```
+
+```bash
 # Regular scalable dice
 /roll 1d100
 /roll 2T20+2
@@ -135,7 +155,8 @@ Output example:
 
 ```
 
-### /ob or /inf - Infinite dice
+#### /ob or /inf - Infinite dice
+
 Format has to be in Nt6+N, Nt6, Nd6+N or Nd6.
 
 if anything else than a 6 is supplied, it will be ignored. T6/D6 dice are hardcoded for the ob dice.
@@ -143,7 +164,8 @@ if anything else than a 6 is supplied, it will be ignored. T6/D6 dice are hardco
 Can also be written with capital letters: ie NT6+N
 
 Example
-```
+
+```bash
 # ob dice
 /ob 1t6
 /ob 2T6+2
@@ -159,12 +181,14 @@ Rolls............ : 2, 1, 3, 3, 4, 4+ 3
 Total............ : 20
 ```
 
-### /fight - Fight assistant
+#### /fight - Fight assistant
+
 Will roll ob +t100 dice for use in a fight.
-User runs ```/fight <diceroll of weapon> <weapon_type> <aim> ```
+User runs ```bash /fight <diceroll of weapon> <weapon_type> <aim>```
 
 Example:
-```
+
+```bash
 /fight 2t6+2 range
 
 Output example:
@@ -179,12 +203,14 @@ Target: Höger ben, Vad
 d100 Total...: 35
 ```
 
-### /lookup - Lookup hit tables
+#### /lookup - Lookup hit tables
+
 Work in progress - for now hit tables, damage tables to be added.
 Supply your weapon type, aim (will rename this, normal, high, low) and the value of a rolled t100 and get where you hit.
 
 Example:
-```
+
+```bash
 /lookup <weapon_type> <aim> <t100>
 
 weapon_type : slash/blunt/range/pierce
@@ -199,11 +225,33 @@ Target  : Torso, Bröstkorg
 
 ```
 
-# Limitations
-This bot is limited by the size of discord messages as well as sizes of some data types. Therefor, by design of the infinite dice, you may reroll a d6 500 times and hit these limits.
+#### /if - Interactive Fight
 
+Under development
+
+#### /ir - Interactive Rolls
+
+Pressents buttons in a message which the users may press to make commmon dice rolls without bonuses
+
+#### /qr - Queued Rolls
+
+Presents a modal where multiple dice rolls can be queued.
+
+Type of dice: roll/normal/regular or ob/inf
+
+List of rolls: supply a comma separated list of rolls, with or without bonus
+
+Example:
+
+```bash
+Type of Dice: ob
+List of rolls: 2t6+1,6t6+3,4t6,3t6+3
+```
+
+## Limitations
+
+This bot is limited by the size of discord messages as well as sizes of some data types. Therefor, by design of the infinite dice, you may reroll a d6 500 times and hit these limits.
 
 This is a known bug.
 
 Accidentally summoning a cosmic horror monster on the outskirts of a semi-large town is not always appreciated by the dungeon master.
-
