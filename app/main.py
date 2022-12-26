@@ -392,8 +392,9 @@ class interactiveFightView(discord.ui.View):
         await interaction.response.send_message(results)
 
 
-@bot.slash_command(descriprion="Interactive Fight")
+@bot.slash_command()
 async def ifight(ctx):
+    """Pressents interactive dropdowns for fights, helps finding a target"""
     await ctx.send("Make your selection", view=interactiveFightView(timeout=120))
 
 
