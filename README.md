@@ -227,11 +227,12 @@ Target  : Torso, Bröstkorg
 
 #### /if - Interactive Fight
 
-Under development
+Pressents interactive dropdowns for fights.
+Rolls a d100 and helps with finding the target based on choices.
 
 #### /ir - Interactive Rolls
 
-Pressents buttons in a message which the users may press to make commmon dice rolls without bonuses
+Pressents buttons in a message which the users may press to make commmon dice rolls without bonuses.
 
 #### /qr - Queued Rolls
 
