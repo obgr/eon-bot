@@ -395,7 +395,7 @@ class interactiveFightView(discord.ui.View):
 @bot.slash_command()
 async def ifight(ctx):
     """Pressents interactive dropdowns for fights, helps finding a target"""
-    await ctx.send("Make your selection", view=interactiveFightView(timeout=120))
+    await ctx.respond("Make your selection", view=interactiveFightView(timeout=120))
 
 
 # Queued rolls
