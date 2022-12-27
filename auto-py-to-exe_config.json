@@ -71,10 +71,6 @@
   },
   {
    "optionDest": "datas",
-   "value": "C:/Users/Olle/Documents/GitHub/eon-bot/app/data;data/"
-  },
-  {
-   "optionDest": "datas",
    "value": "C:/Users/Olle/Documents/GitHub/eon-bot/app/modules;modules/"
   },
   {
