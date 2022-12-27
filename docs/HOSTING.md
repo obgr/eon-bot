@@ -120,7 +120,15 @@ The data structure is similar but a bit different. Do not forget to configure yo
     └── eon-bot.exe
 ```
 
-Open a powershell window, browse to the directory of the binary. If .env is configured correctly, the bot should start up.
+There are two ways of starting the bot
+If you want to see the output if the app craches (or if unconfigured):
+
+- open a powershell window, browse to the directory of the binary. If .env is configured correctly, the bot should start up.
+
+If you already configured the .env file correctly (if you have not configured the bot correctly, the window will just close)
+
+- Double click ```eon-bot.exe```
+
 
 ```powershell
 PS C:\eon-bot> .\eon-bot.exe
@@ -129,3 +137,12 @@ Latency is 0.12604310002643615
 Activity is playing: with cosmic demons
 Debug is False
 ```
+
+#### Notes
+
+I have noticed that sometimes anti virus software marks Pyinstaller packaged exe files as malicious.
+This is known. If this happens, you might need to manually allow it.
+The code is not digitally signed.
+
+I recommend you to run eon-bot as container since it runs isolated and you have the possibillity to inspect the code in a raw format.
+The exe is created for convenience.
