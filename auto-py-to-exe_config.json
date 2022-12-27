@@ -18,6 +18,10 @@
    "value": true
   },
   {
+   "optionDest": "icon_file",
+   "value": "C:/Users/Olle/Documents/GitHub/eon-bot/images/logo.ico"
+  },
+  {
    "optionDest": "name",
    "value": "eon-bot"
   },
