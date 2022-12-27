@@ -230,7 +230,12 @@ Target        : {out[0]}, {out[1]}
 
 
 # https://guide.pycord.dev/interactions/ui-components/buttons
-class ButtonView(discord.ui.View):
+class interactiveRollView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+        await self.message.edit(content="View timed out! Disabled all the components.", view=self)
+
     @discord.ui.button(label="1d10", row=0, style=discord.ButtonStyle.grey, emoji="🎲")
     async def roll_1d10_button_callback(self, button, interaction):
         roll = "1d10"
@@ -314,10 +319,10 @@ class ButtonView(discord.ui.View):
 
 @bot.slash_command(description="Roll preset dice using buttons")
 async def ir(ctx):
-    await ctx.respond("Press the dice you want to roll, active for 5 minutes.", view=ButtonView(timeout=300))
+    await ctx.respond("Press the dice you want to roll, active for 5 minutes.", view=interactiveRollView(timeout=300))
 
 
-# Dropdown Fight
+# Intyeractive Fight
 # https://guide.pycord.dev/interactions/ui-components/dropdowns
 # https://github.com/DenverCoder1/tutorial-discord-bot/blob/select-menu-help/modules/help/help_command.py
 # https://github.com/Pycord-Development/pycord/tree/master/examples/views
@@ -325,7 +330,7 @@ class interactiveFightView(discord.ui.View):
     async def on_timeout(self):
         for child in self.children:
             child.disabled = True
-        await self.message.edit(content="You took too long! Disabled all the components.", view=self)
+        await self.message.edit(content="View timed out! Disabled all the components.", view=self)
 
     @discord.ui.select(
         row=0,
@@ -377,7 +382,7 @@ class interactiveFightView(discord.ui.View):
     @discord.ui.button(
         row=2,
         label="Submit",
-        style=discord.ButtonStyle.green,
+        style=discord.ButtonStyle.blurple,
         emoji="☑"
     )
     async def button_callback(self, button, interaction):
@@ -395,7 +400,7 @@ class interactiveFightView(discord.ui.View):
 @bot.slash_command()
 async def ifight(ctx):
     """Pressents interactive dropdowns for fights, helps finding a target"""
-    await ctx.respond("Make your selection", view=interactiveFightView(timeout=120))
+    await ctx.respond("Make your selection", view=interactiveFightView(timeout=180))
 
 
 # Queued rolls
