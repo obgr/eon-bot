@@ -1,12 +1,15 @@
 # Run this docker file from the parent directory, see README.md
-FROM alpine:3.16
+FROM python:3.10-slim-bullseye
 
-# Upgrade and install 
-RUN apk -U upgrade \
-    && apk add --no-cache \
-                python3 \
-                py3-pip \
-                py3-virtualenv
+# Upgrade container.
+RUN apt-get update \
+    && apt-get install -y \
+        gcc \
+    && apt-get upgrade -y \
+    && apt-get autoremove \
+    && apt-get autoclean \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy App
 COPY app/ /eon-bot/app/
@@ -19,9 +22,7 @@ WORKDIR /eon-bot
 RUN mkdir /eon-bot/venv \
     && python3 -m venv /eon-bot/venv \
     && . /eon-bot/venv/bin/activate \
-    && pip3 install -r requirements.txt \
-    && python3 -m pip install -U py-cord --pre
-    # We need a later package of py-cord therefor additional pip install command
+    && pip3 install -r requirements.txt
 
 COPY docker/entrypoint.sh /eon-bot/
 RUN chmod +x /eon-bot/entrypoint.sh

@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 
 # Local Imports
 from modules.functions import rollDice, rollInfiniteDice, rollForFight, getActivity, lookupFunc  # noqa: E501
+from modules.dice import dice
 
 # Variables from .env
 load_dotenv()
@@ -226,6 +227,218 @@ Command : /lookup weapon_type: {weapon_type} aim: {aim}, t100: {d100}
 Target        : {out[0]}, {out[1]}
 """
     await ctx.respond(results)
+
+
+# https://guide.pycord.dev/interactions/ui-components/buttons
+class interactiveRollView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+        await self.message.edit(content="View timed out! Disabled all the components.", view=self)
+
+    @discord.ui.button(label="1d10", row=0, style=discord.ButtonStyle.grey, emoji="🎲")
+    async def roll_1d10_button_callback(self, button, interaction):
+        roll = "1d10"
+        results = rollDice(roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
+    @discord.ui.button(label="1d100", row=0, style=discord.ButtonStyle.grey, emoji="🎲")
+    async def roll_1d100_button_callback(self, button, interaction):
+        roll = "1d100"
+        results = rollDice(roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
+    @discord.ui.button(label="ob 1d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
+    async def ob_1d6_button_callback(self, button, interaction):
+        ob_roll = "1d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
+    @discord.ui.button(label="ob 2d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
+    async def ob_2d6_button_callback(self, button, interaction):
+        ob_roll = "2d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
+    @discord.ui.button(label="ob 3d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
+    async def ob_3d6_button_callback(self, button, interaction):
+        ob_roll = "3d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
+    @discord.ui.button(label="ob 4d6", row=1, style=discord.ButtonStyle.blurple, emoji="🎲")
+    async def ob_4d6_button_callback(self, button, interaction):
+        ob_roll = "4d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
+    @discord.ui.button(label="ob 5d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
+    async def ob_5d6_button_callback(self, button, interaction):
+        ob_roll = "5d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
+    @discord.ui.button(label="ob 6d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
+    async def ob_6d6_button_callback(self, button, interaction):
+        ob_roll = "6d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
+    @discord.ui.button(label="ob 7d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
+    async def ob_7d6_button_callback(self, button, interaction):
+        ob_roll = "7d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
+    @discord.ui.button(label="ob 8d6", row=2, style=discord.ButtonStyle.green, emoji="🎲")
+    async def ob_8d6_button_callback(self, button, interaction):
+        ob_roll = "8d6"
+        results = rollInfiniteDice(ob_roll, debug)
+        await interaction.response.send_message(
+            f"{interaction.user} {results}"
+        )
+
+
+@bot.slash_command(description="Interactive Rolls - Roll preset dice using buttons")
+async def ir(ctx):
+    await ctx.respond("Press the dice you want to roll, active for 5 minutes.", view=interactiveRollView(timeout=300))
+
+
+# Intyeractive Fight
+# https://guide.pycord.dev/interactions/ui-components/dropdowns
+# https://github.com/DenverCoder1/tutorial-discord-bot/blob/select-menu-help/modules/help/help_command.py
+# https://github.com/Pycord-Development/pycord/tree/master/examples/views
+class interactiveFightView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+        await self.message.edit(content="View timed out! Disabled all the components.", view=self)
+
+    @discord.ui.select(
+        row=0,
+        placeholder="Where do you aim?",
+        min_values=1,
+        max_values=1,
+        options=[
+            discord.SelectOption(
+                label="Normal", description="Think Different.", emoji="🔷"
+            ),
+            discord.SelectOption(
+                label="High", description="Hello there!", emoji="🟥"
+            ),
+            discord.SelectOption(
+                label="Low", description="#Ydoran, Left foot is a great target!", emoji="🟢"
+            ),
+        ]
+    )
+    async def selectAim_callback(self, select, interaction):
+        # select.disabled = True  # set the status of the select as disabled
+        self.selectAim = select.values[0]
+        await interaction.response.edit_message(view=self)
+
+    @discord.ui.select(
+        row=1,
+        placeholder="Choose weapon type",
+        min_values=1,
+        max_values=1,
+        options=[
+            discord.SelectOption(
+                label="Slash", description="Regular slice!", emoji="⚔️"
+            ),
+            discord.SelectOption(
+                label="Blunt", description="Me Strong, Me angry!", emoji="🔨"
+            ),
+            discord.SelectOption(
+                label="Pierce", description="Stick them with the pointy end!", emoji="🪡"
+            ),
+            discord.SelectOption(
+                label="Range", description="Spooky knife action at a distance?", emoji="🏹"
+            )
+        ]
+    )
+    async def selectWeaponType_callback(self, select, interaction):
+        # select.disabled = True  # set the status of the select as disabled
+        self.selectWeaponType = select.values[0]
+        await interaction.response.edit_message(view=self)
+
+    @discord.ui.button(
+        row=2,
+        label="Submit",
+        style=discord.ButtonStyle.blurple,
+        emoji="☑"
+    )
+    async def button_callback(self, button, interaction):
+        # roll_out, d100 = rollForFight(ob_roll, debug)
+        _, _, d100 = dice(
+            int(1),
+            int(0),
+            int(100)
+        )
+        lookup_out = lookupFunc(data_file, self.selectWeaponType.lower(), self.selectAim.lower(), d100, debug)
+        results = f"Roll: {d100}\nTarget: {lookup_out[0]}, {lookup_out[1]}"
+        await interaction.response.send_message(results)
+
+
+@bot.slash_command()
+async def ifight(ctx):
+    """Pressents interactive dropdowns for fights, helps finding a target"""
+    await ctx.respond("Make your selection", view=interactiveFightView(timeout=180))
+
+
+# Queued rolls
+class QueuedRollsModal(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.add_item(discord.ui.InputText(label="Type of Dice"))
+        self.add_item(discord.ui.InputText(label="List of Rolls", style=discord.InputTextStyle.long))
+
+    async def callback(self, interaction: discord.Interaction):
+        rollType = self.children[0].value
+        listRolls = self.children[1].value.split(",")
+        print(rollType)
+        print(listRolls)
+
+        results = ""
+        if rollType.lower() == "ob" or rollType.lower() == "inf":
+            # Roll infinite/ob dice
+            for i in listRolls:
+                results = results + rollInfiniteDice(i, debug) + "\n\n"
+        elif rollType.lower() == "normal" or rollType.lower() == "regular" or rollType.lower() == "roll":
+            # roll a regular dice
+            for i in listRolls:
+                results = results + rollDice(i, debug)
+            print()
+        else:
+            results = f"Unknown rollType: {rollType}"
+
+        # await interaction.response.send_message(embeds=[embed])
+        await interaction.response.send_message(results)
+
+
+@bot.slash_command()
+async def qr(ctx: discord.ApplicationContext):
+    """Opens a modal for Queued Rolls (comma separated)"""
+    modal = QueuedRollsModal(title="Queued Rolls")
+    await ctx.send_modal(modal)
 
 
 # Events

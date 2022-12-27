@@ -2,14 +2,14 @@
     "playing": {
         "activities": [
             "with cosmic demons",
-            "with fire",
+            "with fire magic",
             "in the tavern",
-            "with DMs patience"
+            "with GM's patience"
         ]
     },
     "listening": {
         "activities": [
-            "the screams of the DM",
+            "the screams of the GM",
             "the sound of panic",
             "the rattling of never ending unlimited dice exploding",
             "Gurb, the bard"
@@ -18,9 +18,11 @@
     "watching": {
         "activities": [
             "the annihilation of Rampor",
-            "bad dice rolls",
-            "the DM's big grin",
-            "the accidental tavern brawl"
+            "an accidental party wipe",
+            "the GM's big grin",
+            "the tavern brawl",
+            "the pary fail to take a hint",
+            "the magician self combust"
         ]
     }
 }
