@@ -123,7 +123,7 @@ The data structure is similar but a bit different. Do not forget to configure yo
 There are two ways of starting the bot
 If you want to see the output if the app craches (or if unconfigured):
 
-- open a powershell window, browse to the directory of the binary. If .env is configured correctly, the bot should start up.
+- open a powershell window, browse to the directory of the binary and start ```eon-bot.exe```. If .env is configured correctly, the bot should start up.
 
 If you already configured the .env file correctly (if you have not configured the bot correctly, the window will just close)
 
