@@ -317,7 +317,7 @@ class interactiveRollView(discord.ui.View):
         )
 
 
-@bot.slash_command(description="Roll preset dice using buttons")
+@bot.slash_command(description="Interactive Rolls - Roll preset dice using buttons")
 async def ir(ctx):
     await ctx.respond("Press the dice you want to roll, active for 5 minutes.", view=interactiveRollView(timeout=300))
 
