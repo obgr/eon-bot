@@ -1,8 +1,22 @@
-# HOSTING
+# HOSTING.md
+
+- [HOSTING.md](#hostingmd)
+  - [Requirements](#requirements)
+    - [Requirements for Running dockerized](#requirements-for-running-dockerized)
+    - [Requirements for Running manually - Linux/WSL](#requirements-for-running-manually---linuxwsl)
+      - [Virtual Environment](#virtual-environment)
+  - [Configuration](#configuration)
+  - [Running the bot](#running-the-bot)
+    - [Run Manually](#run-manually)
+    - [Run Docker container](#run-docker-container)
+      - [Scripted build/startup](#scripted-buildstartup)
+      - [Building and Run Manually](#building-and-run-manually)
+    - [Running on Windows - pre built EXE](#running-on-windows---pre-built-exe)
+      - [Notes](#notes)
 
 ## Requirements
 
-The requirements for rinning the bot differs depending on how you want to host the bot.
+The requirements for running the bot differs depending on how you want to host the bot.
 For more permanent setups, i recommend hosting as a container with docker or podman.
 
 ### Requirements for Running dockerized
@@ -60,7 +74,10 @@ mkdir venv \
   && pip3 install -r requirements.txt
 ```
 
-## CONFIGURATION
+## Configuration
+
+In order configure the bot, we use an ```.env``` file (environment file).
+This file contains settings that the application uses. As an example, the discord token or api token is sensitive credentials that we do not want to spread on the internet, so instead of hardcoding the token into the bot, allow it for configuration in the ```.env``` file.
 
 Create a ```app/.env``` file based on ```app/.env.example```
 generate an api token from [discord's developer portal](https://discord.com/developers/).

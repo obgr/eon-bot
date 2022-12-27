@@ -1,4 +1,21 @@
 # eon-bot
+- [eon-bot](#eon-bot)
+  - [Licencing and acknowledgements](#licencing-and-acknowledgements)
+  - [Hosting and Running the bot](#hosting-and-running-the-bot)
+  - [Using the bot](#using-the-bot)
+    - [Syntax](#syntax)
+      - [/about - About](#about---about)
+      - [/cs - Change status](#cs---change-status)
+      - [/dm - Direct message](#dm---direct-message)
+      - [/Ping - send Latency](#ping---send-latency)
+      - [/roll - Scalable dice](#roll---scalable-dice)
+      - [/ob or /inf - Infinite dice](#ob-or-inf---infinite-dice)
+      - [/fight - Fight assistant](#fight---fight-assistant)
+      - [/lookup - Lookup hit tables](#lookup---lookup-hit-tables)
+      - [/if - Interactive Fight](#if---interactive-fight)
+      - [/ir - Interactive Rolls](#ir---interactive-rolls)
+      - [/qr - Queued Rolls](#qr---queued-rolls)
+  - [Limitations](#limitations)
 
 <img src="images/logo.png" >
 
@@ -131,12 +148,12 @@ Target  : Torso, Bröstkorg
 
 #### /if - Interactive Fight
 
-Pressents interactive dropdowns for fights.
+Presents interactive dropdowns for fights.
 Rolls a d100 and helps with finding the target based on choices.
 
 #### /ir - Interactive Rolls
 
-Pressents buttons in a message which the users may press to make commmon dice rolls without bonuses.
+Presents buttons in a message which the users may press to make commmon dice rolls without bonuses.
 
 #### /qr - Queued Rolls
 
