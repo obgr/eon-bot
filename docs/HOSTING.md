@@ -146,7 +146,6 @@ If you already configured the .env file correctly (if you have not configured th
 
 - Double click ```eon-bot.exe```
 
-
 ```powershell
 PS C:\eon-bot> .\eon-bot.exe
 Logged in as kraken#7813
