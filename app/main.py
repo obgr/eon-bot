@@ -68,24 +68,15 @@ async def cs(ctx):
 
 @bot.slash_command(description="About Bot")
 async def about(ctx):
-    message = f"""
-    Hi, My name is {bot.user}.
-You can find my source code below.
-Eon-Bot - https://github.com/obgr/eon-bot
-"""
+    message = f"Hi, My name is {bot.user}.\nYou can find my source code below.\nEon-Bot - https://github.com/obgr/eon-bot"
     await ctx.respond(message)
 
 
 @bot.slash_command(
-    description="""
-    Ask bot to send a Direct Message. Useful for secret dice rolls.
-"""
+    description="Ask bot to send a Direct Message. Useful for secret dice rolls."
 )
 async def dm(ctx):
-    message = """
-    Hello,
-You may send slash commands directly to me in this private chat.
-"""
+    message = "Hello,\nYou may send slash commands directly to me in this private chat."
     reply = f"You got a DM {ctx.author}"
     try:
         await ctx.author.send(message)
@@ -98,10 +89,7 @@ You may send slash commands directly to me in this private chat.
 
 
 @bot.slash_command(
-    description="""
-    Scalable dice, Rolls a die in NdN+bonus or NtN format.
-Example: /roll 1d100
-"""
+    description="Scalable dice, Rolls a die in NdN+bonus or NtN format.\nExample: /roll 1d100"
 )
 @option(
     "roll",
@@ -117,10 +105,7 @@ async def roll(
 
 
 @bot.slash_command(
-    description="""
-    infinite dice. Replace sixes with two additional dice.
-D6 only. Example: /ob 3d6+3
-""")
+    description="infinite dice. Replace sixes with two additional dice.\nD6 only. Example: /ob 3d6+3")
 @option(
     "inf_roll",
     description="Example: 2d6+2",
@@ -135,10 +120,7 @@ async def inf(
 
 
 @bot.slash_command(
-    description="""
-    ob dice. Replace sixes with two additional dice.
-T6 only. Example: /ob 3d6+3
-""")
+    description="ob dice. Replace sixes with two additional dice.\nT6 only. Example: /ob 3d6+3")
 @option(
     "ob_roll",
     description="Example: 2t6+2",
@@ -153,10 +135,7 @@ async def ob(
 
 
 @bot.slash_command(
-    description="""
-    Fight assistant, rolls ob + t100 for target.
-Example: /fight 5t6+2
-"""
+    description="Fight assistant, rolls ob + t100 for target.\nExample: /fight 5t6+2"
 )
 @option(
     "ob_roll",
@@ -184,19 +163,12 @@ async def fight(
     aim = aim.lower()
     roll_out, d100 = rollForFight(ob_roll, debug)
     lookup_out = lookupFunc(data_file, weapon_type, aim, d100, debug)
-    results = f"""
-    {roll_out}
-Aim: {aim}
-Weapon type: {weapon_type}
-Target: {lookup_out[0]}, {lookup_out[1]}
-"""
+    results = f"{roll_out}\nWeapon type: {weapon_type}\nAim: {aim}\nTarget: {lookup_out[0]}, {lookup_out[1]}"
     await ctx.respond(results)
 
 
 @bot.slash_command(
-    description="""
-    Lookup values in the hit tables.
-"""
+    description="Lookup values in the hit tables."
 )
 @option(
     "weapon_type",
@@ -222,10 +194,7 @@ async def lookup(
     weapon_type = weapon_type.lower()
     aim = aim.lower()
     out = lookupFunc(data_file, weapon_type, aim, d100, debug)
-    results = f"""
-Command : /lookup weapon_type: {weapon_type} aim: {aim}, t100: {d100}
-Target        : {out[0]}, {out[1]}
-"""
+    results = f"Command : /lookup weapon_type: {weapon_type} aim: {aim}, t100: {d100}\nTarget        : {out[0]}, {out[1]}"
     await ctx.respond(results)
 
 
@@ -319,7 +288,7 @@ class interactiveRollView(discord.ui.View):
 
 @bot.slash_command(description="Interactive Rolls - Roll preset dice using buttons")
 async def ir(ctx):
-    await ctx.respond("Press the dice you want to roll, active for 5 minutes.", view=interactiveRollView(timeout=300))
+    await ctx.respond("Press the dice you want to roll.", view=interactiveRollView(timeout=300))
 
 
 # Intyeractive Fight
@@ -393,7 +362,7 @@ class interactiveFightView(discord.ui.View):
             int(100)
         )
         lookup_out = lookupFunc(data_file, self.selectWeaponType.lower(), self.selectAim.lower(), d100, debug)
-        results = f"Roll: {d100}\nTarget: {lookup_out[0]}, {lookup_out[1]}"
+        results = f"Weapon type: {self.selectWeaponType.lower()}\nAim: {self.selectAim.lower()}\nRoll: {d100}\nTarget: {lookup_out[0]}, {lookup_out[1]}"
         await interaction.response.send_message(results)
 
 
@@ -430,7 +399,6 @@ class QueuedRollsModal(discord.ui.Modal):
         else:
             results = f"Unknown rollType: {rollType}"
 
-        # await interaction.response.send_message(embeds=[embed])
         await interaction.response.send_message(results)
 
 
