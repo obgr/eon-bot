@@ -1,14 +1,14 @@
 # Hur man installerar Eon-bot
 
 
-#  \
+#  
 Det finns tre sätt att köra Eon-bot på.
 
 Föreslagna sätt att installera botten finns i [https://github.com/obgr/eon-bot/blob/main/docs/HOSTING.md](https://github.com/obgr/eon-bot/blob/main/docs/HOSTING.md)
 
-Det bästa är att köra den i en Container, då avgränsas botten och kommer inte åt resten av din dator. Det finns många resurser för hur man startar en docker-container. Sök på youtube: \
-[https://www.youtube.com/results?search_query=get+a+docker+container+up+and+running](https://www.youtube.com/results?search_query=get+a+docker+container+up+and+running) \
- \
+Det bästa är att köra den i en Container, då avgränsas botten och kommer inte åt resten av din dator. Det finns många resurser för hur man startar en docker-container. Sök på youtube: 
+[https://www.youtube.com/results?search_query=get+a+docker+container+up+and+running](https://www.youtube.com/results?search_query=get+a+docker+container+up+and+running) 
+ 
 Ett mer osäkert sätt att köra botten på är att använda den förbyggda EXE-filen. Detta rekommenderas inte men är möjligt. Även om det inte är rekommenderat så kommer den här guiden att utgå från .EXE-filen.
 
 Ladda ned den senaste versionen av eon-bot.zip från [https://github.com/obgr/eon-bot/releases](https://github.com/obgr/eon-bot/releases)
