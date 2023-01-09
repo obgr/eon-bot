@@ -126,4 +126,6 @@ Nu kan du kopiera den färdiga URL:en från redirect-rutan och klistra in den i 
 ![alt_text](images/image19.png "image_tooltip")
 
 
-Bevisa att du är människa och välkomna botten till din server.Nu kan du börja rulla obegränsade T6:or! 
+Bevisa att du är människa och välkomna botten till din server. 
+
+Nu kan du börja rulla obegränsade T6:or! (Men botten kommer att begränsa den till ca 500 rullningar)
