@@ -76,7 +76,7 @@ OM du missade det så kan du klicka på **Reset Token** för att få en ny.
 ![alt_text](images/image10.png "image_tooltip")
 
 
-När du har fyllt i din token i env.examples så spara den som “_.env_”. KLicka på Ja om du får frågan om att ersätta filen som heter “_.env_”.
+När du har fyllt i din token i env.examples så spara den som “_.env_”. Klicka på Ja om du får frågan om att ersätta filen som heter “_.env_”.
 
 
 ![alt_text](images/image11.png "image_tooltip")
@@ -88,7 +88,7 @@ När du har fyllt i din token i env.examples så spara den som “_.env_”. KLi
 ![alt_text](images/image13.png "image_tooltip")
 
 
-Nu kan du starta eon-bot.exe. Det finns en risk att ditt antivirusprogram kommer att varna för filen. TIllåt körning ändå. (Fast det skulle vara säkrare om du körde den i en container, så överväg det alternativet istället)
+Nu kan du starta eon-bot.exe. Det finns en risk att ditt antivirusprogram kommer att varna för filen. Tillåt körning ändå. (Fast det skulle vara säkrare om du körde den i en container, så överväg det alternativet istället)
 
 
 ![alt_text](images/image14.png "image_tooltip")
@@ -100,7 +100,7 @@ Ett fönster som ser ut typ så här borde startas. Detta innebär att botten nu
 ![alt_text](images/image15.png "image_tooltip")
 
 
-Nu ska vi tillbaka till discord och fixa lite fler grejer innan det att du kan bjuda in botten till din server. Troligtvis är du fortfarande kvar på bot-sidan. Klicka bort _Public Bot, _eftersom du kör boten via en .exe-fil så vill du verkligen inte att någon annan än du ska kunna råka lägga till botten. 
+Nu ska vi tillbaka till discord och fixa lite fler grejer innan det att du kan bjuda in botten till din server. Troligtvis är du fortfarande kvar på bot-sidan. Klicka bort _Public Bot,_ eftersom du kör botten via en .exe-fil så vill du verkligen inte att någon annan än du ska kunna råka lägga till botten. 
 
 
 ![alt_text](images/image16.png "image_tooltip")
