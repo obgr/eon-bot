@@ -122,7 +122,7 @@ def rollDice(roll: str, debug):
             results = results + f"+ {bonus}\n"
         else:
             results = results + "\n"
-        results = results + f"{string_total} {total}"
+        results = results + f"{string_total} {total}" + "\n"
     except Exception as e:
         print(e)
         return 1
