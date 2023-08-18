@@ -96,6 +96,8 @@ def sqlite_lookup(sqlite3_file: str, lookup: str, table: str, id: int):
 def rollDice(roll: str, debug):
     rollType = "roll"
     try:
+        # Removing blank spaces
+        roll = roll.replace(" ", "") 
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
             roll,
