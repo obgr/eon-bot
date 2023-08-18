@@ -187,6 +187,8 @@ def rollInfiniteDice(ob_roll: str, debug):
 def rollForFight(ob_roll: str, debug):
     rollType = "ob"
     try:
+        # Removing blank spaces
+        ob_roll = ob_roll.replace(" ", "") 
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
             ob_roll,
