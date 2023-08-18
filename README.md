@@ -1,6 +1,4 @@
 # eon-bot
-Fork to try and fix error with crash when entering incorrect data for ob rolls.
-IN PROGRESS by amateur, so no promises, itl be a learning exercise. 
 <img src="images/logo.png" >
 
 - [eon-bot](#eon-bot)
