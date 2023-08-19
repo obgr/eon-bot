@@ -96,6 +96,8 @@ def sqlite_lookup(sqlite3_file: str, lookup: str, table: str, id: int):
 def rollDice(roll: str, debug):
     rollType = "roll"
     try:
+        # Removing blank spaces
+        roll = roll.replace(" ", "") 
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
             roll,
@@ -120,7 +122,7 @@ def rollDice(roll: str, debug):
             results = results + f"+ {bonus}\n"
         else:
             results = results + "\n"
-        results = results + f"{string_total} {total}"
+        results = results + f"{string_total} {total}" + "\n"
     except Exception as e:
         print(e)
         return 1
@@ -131,6 +133,8 @@ def rollDice(roll: str, debug):
 def rollInfiniteDice(ob_roll: str, debug):
     rollType = "ob"
     try:
+        # Removing blank spaces
+        ob_roll = ob_roll.replace(" ", "") 
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
             ob_roll,
@@ -185,6 +189,8 @@ def rollInfiniteDice(ob_roll: str, debug):
 def rollForFight(ob_roll: str, debug):
     rollType = "ob"
     try:
+        # Removing blank spaces
+        ob_roll = ob_roll.replace(" ", "") 
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
             ob_roll,
