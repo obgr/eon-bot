@@ -6,9 +6,11 @@
 
 # Imports
 import os
+import sys
 import discord
 from discord.commands import option
 from dotenv import load_dotenv
+from loguru import logger
 
 # Local Imports
 from modules.functions import rollDice, rollInfiniteDice, rollForFight, getActivity, lookupFunc  # noqa: E501
@@ -17,24 +19,40 @@ from modules.dice import dice
 # Variables from .env
 load_dotenv()
 token = os.getenv('discord_token')
-debug = os.getenv('debug')
+debug = os.getenv('debug', "False")
 debug_guilds = os.getenv('debug_guilds')
-# Data
+
+# Data Files
 activities_json_file = os.getenv('activities_json_file')
 data_file = os.getenv('data_file')
 
+# Load debug guilds if set
 if debug_guilds is None:
     bot = discord.Bot()
 elif debug_guilds is not None:
     bot = discord.Bot(debug_guilds=[debug_guilds])
 
+# Logger settings
+logger.remove()
+if debug == "True":
+    logger.add(sys.stderr, level="DEBUG")
+elif debug == "False":
+    logger.add(sys.stderr, level="INFO")
+else:
+    logger.add(sys.stderr, level="INFO")
+    logger.info("Debug not \"True\" or \"False\", defaulting to loglevel INFO")
+
 
 # Commands
+@logger.catch
 @bot.slash_command(description="Sends the bot's latency.")
 async def ping(ctx):
-    await ctx.respond(f"Pong! Latency is {bot.latency}")
+    latency = bot.latency
+    logger.info(f"Pong! Latency is {latency}")
+    await ctx.respond(f"Pong! Latency is {latency}")
 
 
+@logger.catch
 @bot.slash_command(description="Change bot discord status to a random preset")
 async def cs(ctx):
     activity_type, activity = getActivity(activities_json_file)
@@ -60,18 +78,21 @@ async def cs(ctx):
             )
         )
     else:
-        print("Unsupported activity type")
+        logger.debug("Unsupported activity type")
+    logger.info(f"Changing activity to {activity_type}: {activity}")
     await ctx.respond(
         f"{activity_type} {activity}, give me some time to update my status."
     )
 
 
+@logger.catch
 @bot.slash_command(description="About Bot")
 async def about(ctx):
     message = f"Hi, My name is {bot.user}.\nYou can find my source code below.\nEon-Bot - https://github.com/obgr/eon-bot"
     await ctx.respond(message)
 
 
+@logger.catch
 @bot.slash_command(
     description="Ask bot to send a Direct Message. Useful for secret dice rolls."
 )
@@ -80,14 +101,14 @@ async def dm(ctx):
     reply = f"You got a DM {ctx.author}"
     try:
         await ctx.author.send(message)
-        if debug == "True":
-            print("Successfully sent DM!")
+        logger.debug("DM sent")
         await ctx.respond(reply)
-    except ValueError:
-        if debug == "True":
-            print("Unsuccessfull in sending DM")
+    except Exception as e:
+        logger.info("")
+        logger.debug(f"Exception: {e}")
 
 
+@logger.catch
 @bot.slash_command(
     description="Scalable dice, Rolls a die in NdN+bonus or NtN format.\nExample: /roll 1d100"
 )
@@ -104,6 +125,7 @@ async def roll(
     await ctx.respond(results)
 
 
+@logger.catch
 @bot.slash_command(
     description="infinite dice. Replace sixes with two additional dice.\nD6 only. Example: /ob 3d6+3")
 @option(
@@ -119,6 +141,7 @@ async def inf(
     await ctx.respond(results)
 
 
+@logger.catch
 @bot.slash_command(
     description="ob dice. Replace sixes with two additional dice.\nT6 only. Example: /ob 3d6+3")
 @option(
@@ -134,6 +157,7 @@ async def ob(
     await ctx.respond(results)
 
 
+@logger.catch
 @bot.slash_command(
     description="Fight assistant, rolls ob + t100 for target.\nExample: /fight 5t6+2"
 )
@@ -167,6 +191,7 @@ async def fight(
     await ctx.respond(results)
 
 
+@logger.catch
 @bot.slash_command(
     description="Lookup values in the hit tables."
 )
@@ -200,6 +225,7 @@ async def lookup(
 
 # https://guide.pycord.dev/interactions/ui-components/buttons
 class interactiveRollView(discord.ui.View):
+    @logger.catch
     async def on_timeout(self):
         for child in self.children:
             child.disabled = True
@@ -286,6 +312,7 @@ class interactiveRollView(discord.ui.View):
         )
 
 
+@logger.catch
 @bot.slash_command(description="Interactive Rolls - Roll preset dice using buttons")
 async def ir(ctx):
     await ctx.respond("Press the dice you want to roll.", view=interactiveRollView(timeout=300))
@@ -296,11 +323,13 @@ async def ir(ctx):
 # https://github.com/DenverCoder1/tutorial-discord-bot/blob/select-menu-help/modules/help/help_command.py
 # https://github.com/Pycord-Development/pycord/tree/master/examples/views
 class interactiveFightView(discord.ui.View):
+    @logger.catch
     async def on_timeout(self):
         for child in self.children:
             child.disabled = True
         await self.message.edit(content="View timed out! Disabled all the components.", view=self)
 
+    @logger.catch
     @discord.ui.select(
         row=0,
         placeholder="Where do you aim?",
@@ -323,6 +352,7 @@ class interactiveFightView(discord.ui.View):
         self.selectAim = select.values[0]
         await interaction.response.edit_message(view=self)
 
+    @logger.catch
     @discord.ui.select(
         row=1,
         placeholder="Choose weapon type",
@@ -348,6 +378,7 @@ class interactiveFightView(discord.ui.View):
         self.selectWeaponType = select.values[0]
         await interaction.response.edit_message(view=self)
 
+    @logger.catch
     @discord.ui.button(
         row=2,
         label="Submit",
@@ -366,6 +397,7 @@ class interactiveFightView(discord.ui.View):
         await interaction.response.send_message(results)
 
 
+@logger.catch
 @bot.slash_command()
 async def ifight(ctx):
     """Pressents interactive dropdowns for fights, helps finding a target"""
@@ -380,11 +412,12 @@ class QueuedRollsModal(discord.ui.Modal):
         self.add_item(discord.ui.InputText(label="Type of Dice"))
         self.add_item(discord.ui.InputText(label="List of Rolls", style=discord.InputTextStyle.long))
 
+    @logger.catch
     async def callback(self, interaction: discord.Interaction):
         rollType = self.children[0].value
         listRolls = self.children[1].value.split(",")
-        print(rollType)
-        print(listRolls)
+        logger.info(f"{rollType}")
+        logger.info(f"{listRolls}")
 
         results = ""
         if rollType.lower() == "ob" or rollType.lower() == "inf":
@@ -395,13 +428,13 @@ class QueuedRollsModal(discord.ui.Modal):
             # roll a regular dice
             for i in listRolls:
                 results = results + rollDice(i, debug)
-            print()
         else:
             results = f"Unknown rollType: {rollType}"
 
         await interaction.response.send_message(results)
 
 
+@logger.catch
 @bot.slash_command()
 async def qr(ctx: discord.ApplicationContext):
     """Opens a modal for Queued Rolls (comma separated)"""
@@ -410,6 +443,7 @@ async def qr(ctx: discord.ApplicationContext):
 
 
 # Events
+@logger.catch
 @bot.event
 async def on_ready():
     activity_type, activity = getActivity(activities_json_file)
@@ -435,12 +469,11 @@ async def on_ready():
             )
         )
     else:
-        print("Unsupported activity type")
-    print(f"Logged in as {bot.user}")
-    print(f"Latency is {bot.latency}")
-    print(f"Activity is {activity_type}: {activity}")
-    print(f"Debug is {debug}")
-    if debug == "True":
-        print(f"debug_guilds is {debug_guilds}")
+        logger.info("Unsupported activity type")
+    logger.info(f"Logged in as {bot.user}")
+    logger.info(f"Latency is {bot.latency}")
+    logger.info(f"Current activity is {activity_type}: {activity}")
+    logger.info(f"Debug: {debug}")
+    logger.debug(f"debug_guilds: {debug_guilds}")
 
 bot.run(token)

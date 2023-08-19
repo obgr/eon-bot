@@ -6,6 +6,7 @@ import random
 import re
 import sqlite3
 from .dice import dice, ob_dice
+from loguru import logger
 
 # Result vars for discord printout
 string_rolled = "Rolled :"
@@ -15,6 +16,7 @@ string_sixes = "No. Sixes ....:"
 
 
 # Functions
+@logger.catch
 def prettifyDice(rolls):
     out = []
     for i in rolls:
@@ -36,19 +38,16 @@ def prettifyDice(rolls):
     return ', '.join(out)
 
 
+@logger.catch
 def splitRollString(roll: str, rollType: str, debug):
     # Validate pattern
-    if debug == "True":
-        print("\nRegex Debug")
     regex = r'[0-9]+(T|t|D|d)[0-9]+($|\+[0-9]+$)'
     if re.match(regex, roll):
-        if debug == "True":
-            print("Regex matched")
+        logger.debug("Regex matched")
     else:
-        if debug == "True":
-            print("Regex NOT matched")
+        logger.debug("Regex NOT matched")
         return
-    # Pattern to split: "[(T|t|D|d)+$]\s*"
+
     RollSplit = re.split(r"[(T|t|D|d)+$]\s*", roll)
     number_of_rolls = RollSplit[0]
     if rollType == "roll":
@@ -60,19 +59,17 @@ def splitRollString(roll: str, rollType: str, debug):
     elif len(RollSplit) == 3:
         bonus = RollSplit[2]
     else:
-        if debug == "True":
-            print("\nlen RollSplit Debug")
-            print("len of RollSplit should only be 2 or 3")
-            print("Len: ", len(RollSplit))
+        logger.debug("len of RollSplit should only be 2 or 3 ")
+        logger.debug(f"Len: {len(RollSplit)}")
     # Validate content
-    if debug == "True":
-        print("\nRollSplit Debug")
-        print(f"Rolls : {number_of_rolls}")
-        print(f"Sides : {sides_to_die}")
-        print(f"Bonus : {bonus}")
+    logger.debug("RollSplit")
+    logger.debug(f"Rolls : {number_of_rolls}")
+    logger.debug(f"Sides : {sides_to_die}")
+    logger.debug(f"Bonus : {bonus}")
     return number_of_rolls, sides_to_die, bonus
 
 
+@logger.catch
 def getActivity(filepath: str):
     with open(filepath) as json_file:
         data = json.load(json_file)
@@ -83,6 +80,7 @@ def getActivity(filepath: str):
     return random_element, random_child
 
 
+@logger.catch
 def sqlite_lookup(sqlite3_file: str, lookup: str, table: str, id: int):
     con = sqlite3.connect(sqlite3_file)
     cur = con.cursor()
@@ -93,11 +91,12 @@ def sqlite_lookup(sqlite3_file: str, lookup: str, table: str, id: int):
 
 # Command functions
 # Regular scalable dice
+@logger.catch
 def rollDice(roll: str, debug):
     rollType = "roll"
     try:
         # Removing blank spaces
-        roll = roll.replace(" ", "") 
+        roll = roll.replace(" ", "")
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
             roll,
@@ -124,17 +123,18 @@ def rollDice(roll: str, debug):
             results = results + "\n"
         results = results + f"{string_total} {total}" + "\n"
     except Exception as e:
-        print(e)
+        logger.debug(f"{e}")
         return 1
     return results
 
 
 # Infinite Dice (ob dice)
+@logger.catch
 def rollInfiniteDice(ob_roll: str, debug):
     rollType = "ob"
     try:
         # Removing blank spaces
-        ob_roll = ob_roll.replace(" ", "") 
+        ob_roll = ob_roll.replace(" ", "")
         # Split roll to vars
         number_of_rolls, sides_to_die, bonus = splitRollString(
             ob_roll,
@@ -162,51 +162,33 @@ def rollInfiniteDice(ob_roll: str, debug):
             results = results + "\n"
         results = results + f"{string_total} {total}"
     except Exception as e:
-        print(e)
-        print("\nBad Roll Debug")
-        print(sum_rolls)
-        print(int(number_of_rolls))
-        print(int(number_of_rolls) * 2)
+        logger.debug(f"Exception: {e}")
         return 1
-
-    # Debug some roll info for bad roll algorithm.
-    if debug == "True":
-        print("\nBad Roll Debug")
-        print(sum_rolls)
-        print(int(number_of_rolls))
-        print(int(number_of_rolls) * 2)
-
-    # Determine if its a bad roll.
-    # if sum_rolls < (int(number_of_rolls) * 2):
-    #     # React
-    #     await ctx.message.add_reaction(emoji_bad_roll)
-    # else:
-    #     # React
     return results
 
 
 # Fight, rolls a bunch of things you need for a fight in eon.
+@logger.catch
 def rollForFight(ob_roll: str, debug):
     rollType = "ob"
     try:
         # Removing blank spaces
-        ob_roll = ob_roll.replace(" ", "") 
+        ob_roll = ob_roll.replace(" ", "")
         # Split roll to vars
-        number_of_rolls, sides_to_die, bonus = splitRollString(
+        number_of_rolls, _, bonus = splitRollString(
             ob_roll,
             rollType,
             debug
         )
 
         # Roll the ob/infinite dice
-        ob_sum_rolls, ob_rolls, ob_raw_rolls, ob_sixes, ob_total = ob_dice(
+        _, ob_rolls, _, ob_sixes, ob_total = ob_dice(
             int(number_of_rolls),
             int(bonus)
         )
 
         # Roll the t100 die
-
-        d100_sum_rolls, d100_raw_rolls, d100_total = dice(
+        _, _, d100_total = dice(
             int(1),
             int(0),
             int(100)
@@ -226,12 +208,13 @@ def rollForFight(ob_roll: str, debug):
         results = results + f"OB Total ........: {ob_total}\n"
         results = results + f"D100 ..............: {d100_total}\n"
     except Exception as e:
-        print(e)
+        logger.debug(f"{e}")
         return 1
     return results, d100_total
 
 
 # Lookup tables
+@logger.catch
 def lookupFunc(
     sqlite3_file: str,
     weapon_type: str,
@@ -239,11 +222,7 @@ def lookupFunc(
     d100: int,
     debug: str
 ):
-    # regexp for code
-    # regex = r'[0-9]+(T|t|D|d)[0-9]+($|\+[0-9]+$)'
-    # if re.match(regex, roll):
-    #    if debug == "True":
-
+    # regexp for hit table
     re_n = r'^(n+$|normal)+$'
     re_h = r'^(h+$|high)+$'
     re_l = r'^(l+$|low)+$'
@@ -258,24 +237,19 @@ def lookupFunc(
     lookup_table = "lookup_hit_table"
     lookup = "AREA, TARGET"
 
-    # IF code
+    # hit table
     if re.match(re_n, target, re.IGNORECASE):
-        if debug == "True":
-            print("matched normal")
+        logger.debug("matched normal")
         target = "CODE_NORMAL"
     elif re.match(re_h, target, re.IGNORECASE):
-        if debug == "True":
-            print("matched high")
+        logger.debug("matched high")
         target = "CODE_HIGH"
     elif re.match(re_l, target, re.IGNORECASE):
-        if debug == "True":
-            print("matched low")
+        logger.debug("matched low")
         target = "CODE_LOW"
     elif target is None:
-        if debug == "True":
-            print("code is None, defaulting to normal")
+        logger.debug("hit table is None, defaulting to normal hit table")
         target = "CODE_NORMAL"
-    # define code to lookup
     else:
         print("target not matched")
         print(target)
@@ -283,29 +257,22 @@ def lookupFunc(
 
     # if weapon_type
     if re.match(re_s, weapon_type, re.IGNORECASE):
-        if debug == "True":
-            print("matched slash")
+        logger.debug("matched slash")
         hit_table = "hit_table_slash"
     elif re.match(re_b, weapon_type, re.IGNORECASE):
-        if debug == "True":
-            print("matched bluint")
+        logger.debug("matched blunt")
         hit_table = "hit_table_blunt"
     elif re.match(re_r, weapon_type, re.IGNORECASE):
-        if debug == "True":
-            print("matched range")
+        logger.debug("matched range")
         hit_table = "hit_table_range"
     elif re.match(re_p, weapon_type, re.IGNORECASE):
-        if debug == "True":
-            print("matched pierce")
+        logger.debug("matched pierce")
         hit_table = "hit_table_pierce"
     elif weapon_type is None:
-        if debug == "True":
-            print("weapon_type is None, defaulting to slash")
+        logger.debug("weapon_type is None, defaulting to slash")
         hit_table = "hit_table_slash"
-    # define code to lookup
     else:
-        print("weapon_type not matched")
-        print(weapon_type)
+        logger.debug(f"weapon_type not matched\n{weapon_type}")
         return 1
 
     hit_table_out = sqlite_lookup(

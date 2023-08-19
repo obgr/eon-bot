@@ -1,5 +1,5 @@
 # Run this docker file from the parent directory, see README.md
-FROM python:3.10-slim-bullseye
+FROM python:3.11-slim-bookworm
 
 # Upgrade container.
 RUN apt-get update \

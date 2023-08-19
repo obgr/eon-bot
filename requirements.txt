@@ -1,4 +1,5 @@
 flake8
 autopep8
 python-dotenv
-py-cord==2.3.2
+py-cord==2.4.1
+loguru

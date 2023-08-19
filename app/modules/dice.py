@@ -5,9 +5,11 @@
 # ob_dice = Roll T6 dice, reroll two dice when rolling a 6.
 
 import random
+from loguru import logger
 
 
 # Function for simple scalable die
+@logger.catch
 def dice(number_of_rolls, bonus, sides_to_die):
     list_of_raw_rolls = []
     sum_rolls = 0
@@ -38,6 +40,7 @@ def dice(number_of_rolls, bonus, sides_to_die):
 
 
 # Function for ob dice
+@logger.catch
 def ob_dice(number_of_rolls, bonus):
     list_of_ob_rolls = []
     list_of_sixes = []
