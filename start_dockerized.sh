@@ -2,7 +2,7 @@
 # Vars
 ENVPATH="app/.env"
 CONTAINERNAME="eon-bot"
-IMAGEVERSION="1.4.2"
+IMAGEVERSION="1.4.3"
 
 # Color variables
 red='\033[0;31m'
