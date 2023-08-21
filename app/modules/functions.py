@@ -123,7 +123,7 @@ def rollDice(roll: str, debug):
             results = results + "\n"
         results = results + f"{string_total} {total}" + "\n"
     except Exception as e:
-        logger.debug(f"{e}")
+        logger.debug(f"Exception: {e}")
         return 1
     return results
 
@@ -208,7 +208,7 @@ def rollForFight(ob_roll: str, debug):
         results = results + f"OB Total ........: {ob_total}\n"
         results = results + f"D100 ..............: {d100_total}\n"
     except Exception as e:
-        logger.debug(f"{e}")
+        logger.debug(f"Exception: {e}")
         return 1
     return results, d100_total
 
