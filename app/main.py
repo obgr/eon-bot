@@ -21,6 +21,10 @@ load_dotenv()
 token = os.getenv('discord_token')
 debug = os.getenv('debug', "False")
 debug_guilds = os.getenv('debug_guilds')
+checkin_channel_ids = os.getenv("checkin_channel_ids", None)
+# If checkin_channel_ids None, do not split checkin_channel_ids into list
+if checkin_channel_ids is not None:
+    checkin_channel_id_list = checkin_channel_ids.split(",")
 
 # Data Files
 activities_json_file = os.getenv('activities_json_file')
@@ -104,7 +108,6 @@ async def dm(ctx):
         logger.debug("DM sent")
         await ctx.respond(reply)
     except Exception as e:
-        logger.info("")
         logger.debug(f"Exception: {e}")
 
 
@@ -318,7 +321,7 @@ async def ir(ctx):
     await ctx.respond("Press the dice you want to roll.", view=interactiveRollView(timeout=300))
 
 
-# Intyeractive Fight
+# Interactive Fight
 # https://guide.pycord.dev/interactions/ui-components/dropdowns
 # https://github.com/DenverCoder1/tutorial-discord-bot/blob/select-menu-help/modules/help/help_command.py
 # https://github.com/Pycord-Development/pycord/tree/master/examples/views
@@ -475,5 +478,21 @@ async def on_ready():
     logger.info(f"Current activity is {activity_type}: {activity}")
     logger.info(f"Debug: {debug}")
     logger.debug(f"debug_guilds: {debug_guilds}")
+    logger.debug(f"checkin_channel_ids: {checkin_channel_ids}")
+    # If checkin_channel_ids is not None
+    if checkin_channel_ids is not None:
+        # Not None, send connect message
+        logger.debug(f"checkin_channel_id_list: {checkin_channel_id_list}")
+        for id in checkin_channel_id_list:
+            try:
+                checkin_channel = await bot.fetch_channel(id)
+                await checkin_channel.send(content=f"No fear, {bot.user} is here!")
+                logger.debug(f"Sent introduction message to channel id: {id}")
+            except Exception as e:
+                logger.debug(f"Exception: {e}")
+                logger.debug(f"Failed to send message to channel id: {id}")
+    elif checkin_channel_ids is None:
+        # None, do try to send connect message
+        logger.debug("checkin_channel_ids not set in .env. Will not send connect message to channels")
 
 bot.run(token)
