@@ -1,26 +1,35 @@
+x-bot: &bot
+  build:
+    context: .
+    dockerfile: docker/Dockerfile
+  image: eon-bot:1.4.4
+  restart: unless-stopped
+
 services:
   bot1:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    image: eon-bot:1.4.4
-    env_file:
-      - ${BOT1_ENV_FILE:-app/.env1}
-    restart: unless-stopped
-#  bot2:
-#    build:
-#      context: .
-#      dockerfile: docker/Dockerfile
-#    image: eon-bot:1.4.4
-#    env_file:
-#      - ${BOT2_ENV_FILE:-app/.env2}
-#    restart: unless-stopped
-#  bot3:
-#    build:
-#      context: .
-#      dockerfile: docker/Dockerfile
-#    image: eon-bot:1.4.4
-#    env_file:
-#      - ${BOT3_ENV_FILE:-app/.env3}
-#    restart: unless-stopped
-#
+    <<: *bot
+    env_file: ${BOT1_ENV_FILE:-app/.env1}
+
+  #bot2:
+  #  <<: *bot
+  #  env_file: ${BOT2_ENV_FILE:-app/.env2}
+
+  #bot3:
+  #  <<: *bot
+  #  env_file: ${BOT3_ENV_FILE:-app/.env3}
+  #  image: eon-bot:1.4.3 # other version
+
+  #bot4:
+  #  <<: *bot
+  #  env_file: ${BOT4_ENV_FILE:-app/.env4}
+  #  image: eon-bot:1.4.4 # other version
+
+  #bot5:
+  #  <<: *bot
+  #  env_file: ${BOT5_ENV_FILE:-app/.env5}
+  #  image: eon-bot:1.4.4 # other version
+
+  #bot6:
+  #  <<: *bot
+  #  env_file: ${BOT6_ENV_FILE:-app/.env6}
+  #  image: eon-bot:1.4.4 # other version

@@ -1,5 +1,5 @@
 # Run this docker file from the parent directory, see README.md
-FROM python:3.11-slim-trixie
+FROM python:3.14-slim-trixie
 
 # Upgrade container.
 RUN apt-get update \
