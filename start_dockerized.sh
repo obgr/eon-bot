@@ -65,7 +65,7 @@ $CONTAINERRUNTIME rmi ${CONTAINERNAME}:${IMAGEVERSION}
 
 # Build Image
 echo "Building image"
-$CONTAINERRUNTIME build . --no-cache -t ${CONTAINERNAME}:${IMAGEVERSION}
+$CONTAINERRUNTIME build . --no-cache -f docker/Dockerfile -t ${CONTAINERNAME}:${IMAGEVERSION}
 
 # Run Image
 echo "Run image"

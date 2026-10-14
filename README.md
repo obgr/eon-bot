@@ -34,7 +34,7 @@ Permission has been granted by representatives of Helmgast AB to extract the hit
 
 ## Hosting and Running the bot
 
-Read about [Hosting](docs/HOSTING.md) the bot
+Read about [Hosting](HOSTING.md) the bot
 
 ## Using the bot
 

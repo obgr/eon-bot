@@ -1,0 +1,26 @@
+services:
+  bot1:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: eon-bot:1.4.4
+    env_file:
+      - ${BOT1_ENV_FILE:-app/.env1}
+    restart: unless-stopped
+#  bot2:
+#    build:
+#      context: .
+#      dockerfile: docker/Dockerfile
+#    image: eon-bot:1.4.4
+#    env_file:
+#      - ${BOT2_ENV_FILE:-app/.env2}
+#    restart: unless-stopped
+#  bot3:
+#    build:
+#      context: .
+#      dockerfile: docker/Dockerfile
+#    image: eon-bot:1.4.4
+#    env_file:
+#      - ${BOT3_ENV_FILE:-app/.env3}
+#    restart: unless-stopped
+#

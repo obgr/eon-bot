@@ -8,9 +8,9 @@
   - [Configuration](#configuration)
   - [Running the bot](#running-the-bot)
     - [Run Manually](#run-manually)
-    - [Run Docker container](#run-docker-container)
-      - [Scripted build/startup](#scripted-buildstartup)
-      - [Building and Run Manually](#building-and-run-manually)
+    - [Docker Compose (recommended)](#docker-compose-recommended)
+      - [Run multiple instances](#run-multiple-instances)
+      - [Legacy launcher](#legacy-launcher)
     - [Running on Windows - pre built EXE](#running-on-windows---pre-built-exe)
       - [Notes](#notes)
 
@@ -93,29 +93,50 @@ source venv/bin/activate
 python3 app/main.py
 ```
 
-### Run Docker container
+### Docker Compose (recommended)
 
-make sure you have docker prereqs.
-
-#### Scripted build/startup
+Docker Compose is the recommended way to deploy the bot. From the repository root, create and edit the environment file used by the default `bot1` service:
 
 ```bash
-chmod +x start_dockerized.sh
-./start_dockerized.sh
+cp app/.env.example app/.env1
 ```
 
-#### Building and Run Manually
+Start or update the service (this builds the image if needed):
 
 ```bash
-# Build
-docker build . -t eon-bot:manual
-# Run
-docker run -d \
- --mount type=bind,source=$PWD/app/.env,target=/eon-bot/app/.env,readonly \
- --restart unless-stopped \
- --name eon-bot \
- eon-bot:manual
+docker compose up -d --build
+```
 
+Common service operations:
+
+```bash
+docker compose logs -f bot1
+docker compose stop bot1
+docker compose start bot1
+docker compose restart bot1
+docker compose down
+```
+
+`stop` keeps the container so `start` can bring it back. `down` stops and removes the Compose containers and network; it does not delete the image.
+
+#### Run multiple instances
+
+Each service can use its own environment file. To use a different file for `bot1`, set `BOT1_ENV_FILE` when invoking Compose:
+
+```bash
+BOT1_ENV_FILE=app/.env-production docker compose up -d --build bot1
+BOT1_ENV_FILE=app/.env-production docker compose logs -f bot1
+BOT1_ENV_FILE=app/.env-production docker compose stop bot1
+```
+
+The Compose file also includes commented `bot2` and `bot3` examples. Uncomment the services you need, create their environment files (for example, `app/.env2`), and use the matching variable such as `BOT2_ENV_FILE=app/.env2`. Each service runs under its own Compose service name.
+
+#### Legacy launcher
+
+`start_dockerized.sh` is retained for the legacy direct Docker/Podman workflow. For new deployments, use the Compose commands above.
+
+```bash
+./start_dockerized.sh
 ```
 
 ### Running on Windows - pre built EXE
